@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>TEST DOWNLOAD - Slide to PDF</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 30px 15px;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 24px;
+    }
+
+    .info {
+      background: #eef6ff;
+      border-left: 4px solid #2196f3;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 8px;
+      background: #1976d2;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #125ea8;
+    }
+
+    button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 8px;
+      background: #f1f1f1;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    .success {
+      background: #e8f5e9;
+      color: #1b5e20;
+    }
+
+    .error {
+      background: #ffebee;
+      color: #b71c1c;
+    }
+
+    .progress-box {
+      margin-top: 15px;
+      display: none;
+    }
+
+    .progress {
+      width: 100%;
+      height: 18px;
+      background: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #1976d2;
+      transition: width 0.3s ease;
+    }
+
+    .percent {
+      text-align: center;
+      margin-top: 7px;
+      font-weight: bold;
+    }
+
+    .result {
+      margin-top: 15px;
+      display: none;
+    }
+
+    .download-btn {
+      background: #2e7d32;
+    }
+
+    .download-btn:hover {
+      background: #1b5e20;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>TEST DOWNLOAD PDF</h1>
+
+  <div class="info">
+    <strong>Tujuan test:</strong><br>
+    Google Slides → Apps Script → PDF → Browser → Download ke komputer.
+    <br><br>
+    Ini hanya halaman pengujian. Tidak mengubah sistem utama.
+  </div>
+
+  <label for="fileId">
+    ID Google Slides
+  </label>
+
+  <input
+    type="text"
+    id="fileId"
+    placeholder="Masukkan ID Google Slides"
+  >
+
+  <button
+    id="btnConvert"
+    onclick="convertAndDownload()"
+  >
+    CONVERT & DOWNLOAD PDF
+  </button>
+
+  <div
+    class="progress-box"
+    id="progressBox"
+  >
+    <div class="progress">
+      <div
+        class="progress-bar"
+        id="progressBar"
+      ></div>
+    </div>
+
+    <div
+      class="percent"
+      id="percent"
+    >
+      0%
+    </div>
+  </div>
+
+  <div
+    class="status"
+    id="status"
+  >
+    Siap melakukan test.
+  </div>
+
+  <div
+    class="result"
+    id="result"
+  >
+    <button
+      class="download-btn"
+      id="downloadBtn"
+    >
+      DOWNLOAD PDF
+    </button>
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   KONFIGURASI BACKEND
+========================================================= */
+
+const API_URL =
+  'https://script.google.com/macros/s/AKfycbzi0Z6VaceKXwHtAGFUwrSjBYNgeeKCc1CQV5apiSUpygUuojaMPl95vUhlqwwSqzxLoA/exec';
+
+
+/* =========================================================
+   ELEMENT
+========================================================= */
+
+const fileIdInput =
+  document.getElementById('fileId');
+
+const btnConvert =
+  document.getElementById('btnConvert');
+
+const statusBox =
+  document.getElementById('status');
+
+const progressBox =
+  document.getElementById('progressBox');
+
+const progressBar =
+  document.getElementById('progressBar');
+
+const percentText =
+  document.getElementById('percent');
+
+const resultBox =
+  document.getElementById('result');
+
+const downloadBtn =
+  document.getElementById('downloadBtn');
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function setStatus(message, type = '') {
+
+  statusBox.textContent = message;
+
+  statusBox.className =
+    'status ' + type;
+
+}
+
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+function setProgress(value) {
+
+  progressBox.style.display = 'block';
+
+  progressBar.style.width =
+    value + '%';
+
+  percentText.textContent =
+    value + '%';
+
+}
+
+
+/* =========================================================
+   BASE64 → BLOB
+========================================================= */
+
+function base64ToBlob(
+  base64,
+  mimeType
+) {
+
+  const byteCharacters =
+    atob(base64);
+
+  const byteArrays = [];
+
+  const sliceSize = 1024;
+
+  for (
+    let offset = 0;
+    offset < byteCharacters.length;
+    offset += sliceSize
+  ) {
+
+    const slice =
+      byteCharacters.slice(
+        offset,
+        offset + sliceSize
+      );
+
+    const byteNumbers =
+      new Array(slice.length);
+
+    for (
+      let i = 0;
+      i < slice.length;
+      i++
+    ) {
+
+      byteNumbers[i] =
+        slice.charCodeAt(i);
+
+    }
+
+    const byteArray =
+      new Uint8Array(byteNumbers);
+
+    byteArrays.push(byteArray);
+
+  }
+
+  return new Blob(
+    byteArrays,
+    {
+      type: mimeType
+    }
+  );
+
+}
+
+
+/* =========================================================
+   CONVERT & DOWNLOAD
+========================================================= */
+
+async function convertAndDownload() {
+
+  const fileId =
+    fileIdInput.value.trim();
+
+
+  /* -------------------------------------------------------
+     VALIDASI
+  ------------------------------------------------------- */
+
+  if (!fileId) {
+
+    setStatus(
+      'Masukkan ID Google Slides terlebih dahulu.',
+      'error'
+    );
+
+    return;
+
+  }
+
+
+  /* -------------------------------------------------------
+     RESET UI
+  ------------------------------------------------------- */
+
+  btnConvert.disabled = true;
+
+  resultBox.style.display = 'none';
+
+  setProgress(0);
+
+  setStatus(
+    'Menyiapkan permintaan...',
+    ''
+  );
+
+
+  try {
+
+    /* =====================================================
+       25%
+    ===================================================== */
+
+    setProgress(25);
+
+    setStatus(
+      '25% - Mengirim ID Google Slides ke server...'
+    );
+
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'text/plain;charset=utf-8'
+          },
+
+          body: JSON.stringify({
+
+            action:
+              'convertOne',
+
+            fileId:
+              fileId,
+
+            force:
+              true
+
+          })
+
+        }
+      );
+
+
+    /* =====================================================
+       CEK HTTP
+    ===================================================== */
+
+    if (!response.ok) {
+
+      throw new Error(
+        'HTTP Error: ' +
+        response.status
+      );
+
+    }
+
+
+    /* =====================================================
+       50%
+    ===================================================== */
+
+    setProgress(50);
+
+    setStatus(
+      '50% - Menerima hasil konversi dari Apps Script...'
+    );
+
+
+    const result =
+      await response.json();
+
+
+    console.log(
+      'RESPON BACKEND:',
+      result
+    );
+
+
+    /* =====================================================
+       CEK HASIL BACKEND
+    ===================================================== */
+
+    if (!result.success) {
+
+      throw new Error(
+        result.message ||
+        'Konversi gagal.'
+      );
+
+    }
+
+
+    /* =====================================================
+       75%
+    ===================================================== */
+
+    setProgress(75);
+
+    setStatus(
+      '75% - Mengubah Base64 menjadi file PDF...'
+    );
+
+
+    if (!result.base64) {
+
+      throw new Error(
+        'Data PDF Base64 tidak diterima dari server.'
+      );
+
+    }
+
+
+    const pdfBlob =
+      base64ToBlob(
+        result.base64,
+        result.mimeType ||
+        'application/pdf'
+      );
+
+
+    /* =====================================================
+       85%
+    ===================================================== */
+
+    setProgress(85);
+
+    setStatus(
+      '85% - PDF berhasil dibuat di browser...'
+    );
+
+
+    const pdfName =
+      result.pdfName ||
+      'hasil-konversi.pdf';
+
+
+    /* =====================================================
+       DOWNLOAD FUNCTION
+    ===================================================== */
+
+    function downloadPDF() {
+
+      const blobUrl =
+        URL.createObjectURL(
+          pdfBlob
+        );
+
+      const a =
+        document.createElement('a');
+
+      a.href =
+        blobUrl;
+
+      a.download =
+        pdfName;
+
+      document.body.appendChild(a);
+
+      a.click();
+
+      a.remove();
+
+      setTimeout(
+        function() {
+
+          URL.revokeObjectURL(
+            blobUrl
+          );
+
+        },
+        1000
+      );
+
+    }
+
+
+    /* =====================================================
+       TOMBOL DOWNLOAD
+    ===================================================== */
+
+    downloadBtn.onclick =
+      downloadPDF;
+
+
+    /* =====================================================
+       100%
+    ===================================================== */
+
+    setProgress(100);
+
+    setStatus(
+      '100% - BERHASIL!\n\n' +
+      'File PDF: ' +
+      pdfName +
+      '\n\n' +
+      'PDF sudah diterima browser.\n' +
+      'Klik DOWNLOAD PDF untuk menyimpan ke komputer.',
+      'success'
+    );
+
+
+    resultBox.style.display =
+      'block';
+
+
+    /* =====================================================
+       AUTO DOWNLOAD
+    ===================================================== */
+
+    downloadPDF();
+
+
+  } catch (error) {
+
+    console.error(
+      'ERROR CONVERT:',
+      error
+    );
+
+
+    setStatus(
+      'GAGAL\n\n' +
+      error.message,
+      'error'
+    );
+
+
+    progressBar.style.width =
+      '0%';
+
+    percentText.textContent =
+      '0%';
+
+
+  } finally {
+
+    btnConvert.disabled =
+      false;
+
+  }
+
+}
+
+
+/* =========================================================
+   ENTER KEY
+========================================================= */
+
+fileIdInput.addEventListener(
+  'keydown',
+  function(event) {
+
+    if (event.key === 'Enter') {
+
+      convertAndDownload();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   READY
+========================================================= */
+
+console.log(
+  'TEST_DOWNLOAD READY'
+);
+
+console.log(
+  'API:',
+  API_URL
+);
+
+</script>
+
+</body>
+</html>
