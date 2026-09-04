@@ -1786,7 +1786,106 @@ async function processFiles(
   }
 
 }
+function setProgress(percent, message) {
 
+  try {
+
+    percent = Math.max(
+      0,
+      Math.min(100, Number(percent) || 0)
+    );
+
+    /*
+     * Cari elemen progress yang tersedia.
+     * Sistem dibuat fleksibel supaya tidak merusak
+     * HTML yang sudah ada.
+     */
+
+    const progressBar =
+      document.getElementById('progressBar') ||
+      document.getElementById('progressFill') ||
+      document.querySelector('.progress-fill');
+
+    const progressPercent =
+      document.getElementById('progressPercent') ||
+      document.querySelector('.progress-percent');
+
+    const progressText =
+      document.getElementById('progressText') ||
+      document.getElementById('progressLabel') ||
+      document.querySelector('.progress-text');
+
+    const progressContainer =
+      document.getElementById('progressContainer') ||
+      document.getElementById('progress');
+
+    /*
+     * Tampilkan progress jika elemennya tersedia.
+     */
+
+    if (progressContainer) {
+      progressContainer.style.display = 'block';
+    }
+
+    /*
+     * Progress bar
+     */
+
+    if (progressBar) {
+
+      progressBar.style.width =
+        percent + '%';
+
+    }
+
+    /*
+     * Angka persen
+     */
+
+    if (progressPercent) {
+
+      progressPercent.textContent =
+        percent + '%';
+
+    }
+
+    /*
+     * Pesan progress
+     */
+
+    if (progressText && message) {
+
+      progressText.textContent =
+        message;
+
+    }
+
+    /*
+     * Log juga supaya mudah dipantau.
+     */
+
+    if (message) {
+
+      console.log(
+        `[PROGRESS ${percent}%] ${message}`
+      );
+
+    }
+
+  } catch (error) {
+
+    /*
+     * Jangan sampai masalah tampilan progress
+     * menghentikan proses konversi PDF.
+     */
+
+    console.warn(
+      'Progress UI error:',
+      error
+    );
+
+  }
+}
 
 /* ==========================================================
    PROCESS ONE FILE
