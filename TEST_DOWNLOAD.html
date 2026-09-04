@@ -12,68 +12,287 @@
 
 <style>
 
+/* ==========================================================
+   RESET
+   ========================================================== */
+
 * {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #f4f6f8;
-  color: #202124;
+html {
+  scroll-behavior: smooth;
 }
 
+body {
+  margin: 0;
+  font-family:
+    Inter,
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  background:
+    linear-gradient(
+      180deg,
+      #eef4ff 0%,
+      #f6f8fb 38%,
+      #f4f6f8 100%
+    );
+
+  color: #202124;
+  min-height: 100vh;
+}
+
+
+/* ==========================================================
+   CONTAINER
+   ========================================================== */
+
 .container {
-  width: min(1400px, 96%);
-  margin: 25px auto 50px;
+  width: min(1450px, 96%);
+  margin: 28px auto 55px;
+}
+
+
+/* ==========================================================
+   HEADER
+   ========================================================== */
+
+.header {
+  background:
+    linear-gradient(
+      135deg,
+      #1a73e8,
+      #4285f4
+    );
+
+  color: white;
+
+  border-radius: 20px;
+
+  padding: 28px 30px;
+
+  margin-bottom: 20px;
+
+  box-shadow:
+    0 10px 30px rgba(26,115,232,.18);
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+.header::after {
+  content: "";
+
+  position: absolute;
+
+  width: 230px;
+  height: 230px;
+
+  border-radius: 50%;
+
+  right: -80px;
+  top: -100px;
+
+  background:
+    rgba(255,255,255,.10);
+}
+
+.header-content {
+  position: relative;
+  z-index: 2;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  margin: 0;
+}
+
+.header-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,.18);
+
+  border-radius: 14px;
+
+  font-size: 25px;
 }
 
 h1 {
-  margin: 0 0 8px;
-  font-size: 30px;
+  margin: 0;
+  font-size: 29px;
+  letter-spacing: -.5px;
 }
 
 .subtitle {
-  color: #666;
-  margin-bottom: 25px;
+  margin:
+    12px 0 0 62px;
+
+  color: rgba(255,255,255,.88);
+
+  font-size: 14px;
+
+  line-height: 1.6;
 }
+
+
+/* ==========================================================
+   CARD
+   ========================================================== */
 
 .card {
   background: white;
-  border-radius: 14px;
-  padding: 20px;
+
+  border-radius: 16px;
+
+  padding: 21px;
+
   margin-bottom: 18px;
-  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+
+  border: 1px solid #e8eaed;
+
+  box-shadow:
+    0 3px 14px rgba(60,64,67,.07);
 }
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  margin-bottom: 17px;
+}
+
+.card-title-icon {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: #e8f0fe;
+
+  color: #1a73e8;
+
+  font-size: 15px;
+}
+
+
+/* ==========================================================
+   LABEL / INPUT
+   ========================================================== */
 
 label {
   display: block;
-  font-weight: 600;
+
+  font-weight: 650;
+
   margin-bottom: 7px;
+
+  font-size: 14px;
 }
 
 input[type="text"] {
   width: 100%;
-  padding: 13px;
-  border: 1px solid #ccc;
-  border-radius: 9px;
+
+  padding: 14px 15px;
+
+  border:
+    1px solid #dadce0;
+
+  border-radius: 10px;
+
   font-size: 15px;
+
+  color: #202124;
+
+  background: #fff;
+
+  outline: none;
+
+  transition:
+    border .2s,
+    box-shadow .2s;
 }
+
+input[type="text"]:focus {
+  border-color: #1a73e8;
+
+  box-shadow:
+    0 0 0 3px rgba(26,115,232,.12);
+}
+
+
+/* ==========================================================
+   ROW
+   ========================================================== */
 
 .row {
   display: flex;
-  gap: 12px;
+
+  gap: 10px;
+
   flex-wrap: wrap;
+
   align-items: center;
 }
 
+
+/* ==========================================================
+   BUTTON
+   ========================================================== */
+
 button {
   border: 0;
-  border-radius: 9px;
+
+  border-radius: 10px;
+
   padding: 12px 17px;
+
   cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
+
+  font-weight: 650;
+
+  font-size: 13px;
+
+  transition:
+    transform .15s,
+    box-shadow .15s,
+    opacity .15s;
+
+  white-space: nowrap;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 4px 12px rgba(60,64,67,.14);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
 }
 
 .btn-primary {
@@ -97,81 +316,398 @@ button {
 }
 
 .btn-secondary {
-  background: #e8eaed;
+  background: #f1f3f4;
   color: #202124;
 }
 
-button:disabled {
-  opacity: .55;
-  cursor: not-allowed;
+.btn-secondary:hover:not(:disabled) {
+  background: #e8eaed;
 }
+
+
+/* ==========================================================
+   OPTIONS
+   ========================================================== */
 
 .options {
   margin-top: 14px;
+
   display: flex;
-  gap: 20px;
+
+  gap: 12px;
+
   flex-wrap: wrap;
 }
 
 .options label {
   display: flex;
-  gap: 8px;
+
+  gap: 9px;
+
   align-items: center;
+
   font-weight: normal;
+
   margin: 0;
+
+  padding:
+    9px 12px;
+
+  background: #f8f9fa;
+
+  border:
+    1px solid #eceff1;
+
+  border-radius: 9px;
+
+  cursor: pointer;
 }
+
+.options input {
+  accent-color: #1a73e8;
+}
+
+
+/* ==========================================================
+   SMALL TEXT
+   ========================================================== */
+
+.small {
+  font-size: 12px;
+  color: #777;
+}
+
+
+/* ==========================================================
+   FOLDER PREVIEW
+   ========================================================== */
+
+.folder-id-preview {
+  margin-top: 9px;
+
+  padding:
+    9px 11px;
+
+  border-radius: 9px;
+
+  background: #f8f9fa;
+
+  border:
+    1px solid #eceff1;
+
+  font-size: 12px;
+
+  color: #666;
+
+  word-break: break-all;
+}
+
+
+/* ==========================================================
+   API STATUS
+   ========================================================== */
+
+.api-status {
+  margin-top: 13px;
+
+  padding:
+    11px 13px;
+
+  border-radius: 9px;
+
+  background: #f8f9fa;
+
+  font-size: 13px;
+
+  border:
+    1px solid #eceff1;
+}
+
+.api-ok {
+  color: #137333;
+  background: #e6f4ea;
+  border-color: #cce8d4;
+}
+
+.api-error {
+  color: #c5221f;
+  background: #fce8e6;
+  border-color: #f2c8c5;
+}
+
+
+/* ==========================================================
+   SUMMARY
+   ========================================================== */
 
 .summary {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 13px;
 }
 
 .summary-card {
   background: white;
-  padding: 18px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+
+  padding: 18px 19px;
+
+  border-radius: 14px;
+
+  border:
+    1px solid #e8eaed;
+
+  box-shadow:
+    0 3px 12px rgba(60,64,67,.06);
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+.summary-card::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  width: 4px;
+  height: 100%;
+
+  background: #1a73e8;
 }
 
 .summary-number {
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 29px;
+
+  font-weight: 750;
+
+  line-height: 1.1;
+
+  color: #202124;
 }
 
 .summary-label {
-  color: #666;
-  margin-top: 5px;
+  color: #6b7280;
+
+  margin-top: 6px;
+
+  font-size: 13px;
 }
+
+
+/* ==========================================================
+   TABLE
+   ========================================================== */
 
 .table-wrap {
   overflow-x: auto;
+
+  border:
+    1px solid #e8eaed;
+
+  border-radius: 12px;
 }
 
 table {
   width: 100%;
+
   border-collapse: collapse;
-  min-width: 850px;
+
+  min-width: 1000px;
+
+  background: white;
 }
 
 th,
 td {
-  border-bottom: 1px solid #eee;
-  padding: 11px 9px;
+  border-bottom:
+    1px solid #edf0f2;
+
+  padding:
+    12px 11px;
+
   text-align: left;
+
   vertical-align: middle;
 }
 
 th {
-  background: #f8f9fa;
+  background:
+    linear-gradient(
+      180deg,
+      #f8f9fa,
+      #f1f3f4
+    );
+
+  color: #3c4043;
+
+  font-size: 12px;
+
+  font-weight: 750;
+
+  text-transform: uppercase;
+
+  letter-spacing: .25px;
+
+  white-space: nowrap;
+
+  position: sticky;
+
+  top: 0;
+
+  z-index: 2;
 }
 
-.status {
-  display: inline-block;
-  padding: 5px 9px;
-  border-radius: 20px;
+td {
+  font-size: 13px;
+}
+
+tbody tr {
+  transition:
+    background .15s;
+}
+
+tbody tr:hover {
+  background: #f8fbff;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+
+/* ==========================================================
+   TABLE COLUMN WIDTH
+   ========================================================== */
+
+table th:nth-child(1),
+table td:nth-child(1) {
+  width: 45px;
+
+  text-align: center;
+}
+
+table th:nth-child(2),
+table td:nth-child(2) {
+  width: 48px;
+
+  text-align: center;
+}
+
+table th:nth-child(3),
+table td:nth-child(3) {
+  min-width: 280px;
+}
+
+table th:nth-child(4),
+table td:nth-child(4) {
+  width: 125px;
+
+  white-space: nowrap;
+}
+
+table th:nth-child(5),
+table td:nth-child(5) {
+  width: 145px;
+
+  white-space: nowrap;
+}
+
+table th:nth-child(6),
+table td:nth-child(6) {
+  min-width: 230px;
+}
+
+
+/* ==========================================================
+   FILE NAME
+   ========================================================== */
+
+.file-name {
+  font-weight: 700;
+
+  color: #202124;
+
+  line-height: 1.4;
+
+  word-break: break-word;
+}
+
+.file-id {
+  margin-top: 4px;
+
+  font-size: 11px;
+
+  color: #9aa0a6;
+
+  font-family: Consolas, monospace;
+
+  word-break: break-all;
+}
+
+
+/* ==========================================================
+   SIZE
+   ========================================================== */
+
+.file-size {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    6px 9px;
+
+  border-radius: 8px;
+
+  background: #f1f3f4;
+
+  color: #3c4043;
+
   font-size: 12px;
-  font-weight: 600;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.file-size::before {
+  content: "▣";
+
+  color: #5f6368;
+
+  font-size: 11px;
+}
+
+
+/* ==========================================================
+   STATUS
+   ========================================================== */
+
+.status {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    6px 10px;
+
+  border-radius: 20px;
+
+  font-size: 11px;
+
+  font-weight: 750;
+
+  white-space: nowrap;
 }
 
 .status-new {
@@ -189,116 +725,306 @@ th {
   color: #c5221f;
 }
 
+
+/* ==========================================================
+   PATH
+   ========================================================== */
+
+.path-badge {
+  display: inline-block;
+
+  padding:
+    6px 9px;
+
+  border-radius: 8px;
+
+  background: #f8f9fa;
+
+  border:
+    1px solid #eceff1;
+
+  color: #5f6368;
+
+  font-size: 11px;
+
+  line-height: 1.4;
+
+  max-width: 100%;
+
+  word-break: break-word;
+}
+
+
+/* ==========================================================
+   EMPTY
+   ========================================================== */
+
+.empty {
+  padding: 38px !important;
+
+  text-align: center !important;
+
+  color: #777;
+
+  font-size: 13px;
+}
+
+
+/* ==========================================================
+   PROGRESS
+   ========================================================== */
+
 .progress-box {
-  margin-top: 15px;
-  display: none;
+  margin-top: 0;
+}
+
+.progress-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 9px;
 }
 
 .progress-title {
-  font-weight: bold;
-  margin-bottom: 8px;
+  font-weight: 750;
+
+  font-size: 14px;
+
+  word-break: break-word;
+}
+
+.progress-percent {
+  font-size: 13px;
+
+  font-weight: 750;
+
+  color: #1a73e8;
+
+  white-space: nowrap;
 }
 
 .progress-bar {
   width: 100%;
+
   height: 22px;
+
   background: #e8eaed;
+
   border-radius: 20px;
+
   overflow: hidden;
+
+  box-shadow:
+    inset 0 1px 3px rgba(0,0,0,.08);
 }
 
 .progress-fill {
   width: 0%;
+
   height: 100%;
-  background: #1a73e8;
-  transition: width .25s ease;
+
+  background:
+    linear-gradient(
+      90deg,
+      #1a73e8,
+      #4285f4
+    );
+
+  transition:
+    width .25s ease;
 }
 
 .progress-text {
-  margin-top: 7px;
-  font-weight: bold;
+  margin-top: 8px;
+
+  font-size: 12px;
+
+  color: #6b7280;
 }
+
+
+/* ==========================================================
+   LOG
+   ========================================================== */
 
 .log {
-  background: #111;
-  color: #e8eaed;
-  border-radius: 10px;
-  padding: 14px;
-  min-height: 150px;
-  max-height: 360px;
+  background:
+    #101114;
+
+  color: #dfe3e8;
+
+  border-radius: 11px;
+
+  padding: 15px;
+
+  min-height: 160px;
+
+  max-height: 390px;
+
   overflow-y: auto;
-  font-family: Consolas, monospace;
-  font-size: 13px;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size: 12px;
+
+  line-height: 1.65;
+
   white-space: pre-wrap;
+
+  border:
+    1px solid #25272b;
 }
 
-.empty {
-  padding: 30px;
-  text-align: center;
-  color: #777;
+
+/* ==========================================================
+   SECTION TITLE
+   ========================================================== */
+
+.section-heading {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 14px;
 }
 
-.small {
-  font-size: 12px;
-  color: #777;
+.section-heading h3 {
+  margin: 0;
+
+  font-size: 16px;
 }
 
-.badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 20px;
-  background: #f1f3f4;
-  font-size: 12px;
-}
 
-.api-status {
-  margin-top: 12px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: #f8f9fa;
-  font-size: 13px;
-}
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
 
-.api-ok {
-  color: #137333;
-}
+@media (max-width: 900px) {
 
-.api-error {
-  color: #c5221f;
-}
-
-.folder-id-preview {
-  margin-top: 8px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  background: #f8f9fa;
-  font-size: 12px;
-  color: #666;
-  word-break: break-all;
-}
-
-@media (max-width: 800px) {
+  .summary {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
 
   h1 {
+    font-size: 25px;
+  }
+
+  .subtitle {
+    margin-left: 0;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .container {
+    width: 94%;
+
+    margin-top: 15px;
+  }
+
+  .header {
+    padding: 21px;
+
+    border-radius: 16px;
+  }
+
+  .header-title {
+    align-items: flex-start;
+  }
+
+  .header-icon {
+    width: 42px;
+    height: 42px;
+
+    font-size: 21px;
+
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-size: 21px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+
+    line-height: 1.55;
+  }
+
+  .card {
+    padding: 15px;
+
+    border-radius: 13px;
+  }
+
+  .summary {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 9px;
+  }
+
+  .summary-card {
+    padding: 14px;
+  }
+
+  .summary-number {
     font-size: 24px;
   }
 
-  .summary {
-    grid-template-columns: repeat(2, 1fr);
+  .summary-label {
+    font-size: 11px;
+  }
+
+  button {
+    flex: 1 1 auto;
   }
 
 }
 
-@media (max-width: 500px) {
+
+@media (max-width: 430px) {
 
   .summary {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   button {
     width: 100%;
   }
 
+  .options label {
+    width: 100%;
+  }
+
+}
+
+
+/* ==========================================================
+   CHECKBOX
+   ========================================================== */
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+
+  accent-color: #1a73e8;
+
+  cursor: pointer;
 }
 
 </style>
@@ -309,25 +1035,59 @@ th {
 
 <div class="container">
 
-  <h1>
-    Google Slides → PDF Converter
-  </h1>
 
-  <div class="subtitle">
-    Konversi Google Slides menjadi PDF berkualitas tinggi.
-    File besar otomatis menggunakan mode PNG MEDIUM.
+  <!-- ======================================================
+       HEADER
+       ====================================================== -->
+
+  <div class="header">
+
+    <div class="header-content">
+
+      <div class="header-title">
+
+        <div class="header-icon">
+          PDF
+        </div>
+
+        <h1>
+          Google Slides → PDF Converter
+        </h1>
+
+      </div>
+
+      <div class="subtitle">
+        Konversi Google Slides menjadi PDF berkualitas tinggi.
+        File besar otomatis menggunakan mode MEDIUM PNG dan
+        digabung menjadi satu PDF final.
+      </div>
+
+    </div>
+
   </div>
 
 
-  <!-- =====================================================
+  <!-- ======================================================
        FOLDER
-       ===================================================== -->
+       ====================================================== -->
 
   <div class="card">
+
+    <div class="card-title">
+
+      <div class="card-title-icon">
+        📁
+      </div>
+
+      Folder Google Drive
+
+    </div>
+
 
     <label for="folderUrl">
       URL Folder Google Drive
     </label>
+
 
     <input
       id="folderUrl"
@@ -336,11 +1096,13 @@ th {
       autocomplete="off"
     >
 
+
     <div
       id="folderIdPreview"
       class="folder-id-preview"
       style="display:none;"
     ></div>
+
 
     <div class="options">
 
@@ -355,6 +1117,7 @@ th {
 
       </label>
 
+
       <label>
 
         <input
@@ -368,18 +1131,21 @@ th {
 
     </div>
 
+
     <div
       class="small"
       style="margin-top:10px;"
     >
+
       Mode file besar:
-      <b>MEDIUM PNG</b>
-      → PDF → digabung menjadi 1 PDF final.
+      <b>MEDIUM PNG → PDF → digabung menjadi 1 PDF final.</b>
+
     </div>
+
 
     <div
       class="row"
-      style="margin-top:15px;"
+      style="margin-top:16px;"
     >
 
       <button
@@ -387,18 +1153,20 @@ th {
         id="btnScan"
         onclick="scanFolder()"
       >
-        SCAN FOLDER
+        🔍 SCAN FOLDER
       </button>
+
 
       <button
         class="btn-secondary"
         id="btnClearHistory"
         onclick="clearHistory()"
       >
-        HAPUS HISTORY
+        🗑 HAPUS HISTORY
       </button>
 
     </div>
+
 
     <div
       id="apiStatus"
@@ -410,9 +1178,9 @@ th {
   </div>
 
 
-  <!-- =====================================================
+  <!-- ======================================================
        SUMMARY
-       ===================================================== -->
+       ====================================================== -->
 
   <div class="summary">
 
@@ -431,6 +1199,7 @@ th {
 
     </div>
 
+
     <div class="summary-card">
 
       <div
@@ -446,6 +1215,7 @@ th {
 
     </div>
 
+
     <div class="summary-card">
 
       <div
@@ -460,6 +1230,7 @@ th {
       </div>
 
     </div>
+
 
     <div class="summary-card">
 
@@ -479,14 +1250,25 @@ th {
   </div>
 
 
-  <!-- =====================================================
+  <!-- ======================================================
        CONTROL
-       ===================================================== -->
+       ====================================================== -->
 
   <div
     class="card"
     style="margin-top:18px;"
   >
+
+    <div class="card-title">
+
+      <div class="card-title-icon">
+        ⚙
+      </div>
+
+      Kontrol Conversion
+
+    </div>
+
 
     <div class="row">
 
@@ -495,31 +1277,34 @@ th {
         id="btnSelectAll"
         onclick="selectAll()"
       >
-        PILIH SEMUA
+        ☑ PILIH SEMUA
       </button>
+
 
       <button
         class="btn-secondary"
         id="btnDeselectAll"
         onclick="deselectAll()"
       >
-        BATALKAN SEMUA
+        ☐ BATALKAN SEMUA
       </button>
+
 
       <button
         class="btn-success"
         id="btnConvertSelected"
         onclick="convertSelected()"
       >
-        CONVERT TERPILIH
+        ▶ CONVERT TERPILIH
       </button>
+
 
       <button
         class="btn-warning"
         id="btnConvertAll"
         onclick="convertAll()"
       >
-        CONVERT SEMUA
+        ⚡ CONVERT SEMUA
       </button>
 
     </div>
@@ -527,11 +1312,24 @@ th {
   </div>
 
 
-  <!-- =====================================================
+  <!-- ======================================================
        TABLE
-       ===================================================== -->
+       ====================================================== -->
 
   <div class="card">
+
+    <div class="section-heading">
+
+      <h3>
+        📋 Daftar Google Slides
+      </h3>
+
+      <span class="badge">
+        1 Slides = 1 PDF
+      </span>
+
+    </div>
+
 
     <div class="table-wrap">
 
@@ -575,6 +1373,7 @@ th {
 
         </thead>
 
+
         <tbody id="fileTable">
 
           <tr>
@@ -583,8 +1382,10 @@ th {
               colspan="6"
               class="empty"
             >
+
               Belum ada data.
               Silakan scan folder.
+
             </td>
 
           </tr>
@@ -598,9 +1399,9 @@ th {
   </div>
 
 
-  <!-- =====================================================
+  <!-- ======================================================
        PROGRESS
-       ===================================================== -->
+       ====================================================== -->
 
   <div
     class="card"
@@ -608,12 +1409,24 @@ th {
     style="display:none;"
   >
 
-    <div
-      class="progress-title"
-      id="progressTitle"
-    >
-      Menunggu...
+    <div class="progress-header">
+
+      <div
+        class="progress-title"
+        id="progressTitle"
+      >
+        Menunggu...
+      </div>
+
+      <div
+        class="progress-percent"
+        id="progressPercent"
+      >
+        0%
+      </div>
+
     </div>
+
 
     <div class="progress-bar">
 
@@ -623,6 +1436,7 @@ th {
       ></div>
 
     </div>
+
 
     <div
       class="progress-text"
@@ -634,15 +1448,24 @@ th {
   </div>
 
 
-  <!-- =====================================================
+  <!-- ======================================================
        LOG
-       ===================================================== -->
+       ====================================================== -->
 
   <div class="card">
 
-    <h3>
-      Log Proses
-    </h3>
+    <div class="section-heading">
+
+      <h3>
+        📝 Log Proses
+      </h3>
+
+      <span class="badge">
+        System Log
+      </span>
+
+    </div>
+
 
     <div
       class="log"
@@ -656,9 +1479,9 @@ th {
 </div>
 
 
-<!-- =======================================================
+<!-- ========================================================
      LIBRARY
-     ======================================================= -->
+     ======================================================== -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
@@ -772,13 +1595,22 @@ function showProgress(
       )
     );
 
+
   document.getElementById(
     'progressFill'
   ).style.width =
     value + '%';
 
+
   document.getElementById(
     'progressText'
+  ).textContent =
+    Math.round(value) +
+    '%';
+
+
+  document.getElementById(
+    'progressPercent'
   ).textContent =
     Math.round(value) +
     '%';
@@ -795,39 +1627,194 @@ function updateSummary() {
   const total =
     filesData.length;
 
+
   const selected =
     filesData.filter(
       function(f) {
+
         return f.selected;
+
       }
     ).length;
+
 
   const converted =
     filesData.filter(
       function(f) {
+
         return f.converted;
+
       }
     ).length;
+
 
   document.getElementById(
     'totalCount'
   ).textContent =
     total;
 
+
   document.getElementById(
     'selectedCount'
   ).textContent =
     selected;
+
 
   document.getElementById(
     'convertedCount'
   ).textContent =
     converted;
 
+
   document.getElementById(
     'pendingCount'
   ).textContent =
     total - converted;
+
+}
+
+
+/* ==========================================================
+   FORMAT SIZE
+   ========================================================== */
+
+function formatFileSize(bytes) {
+
+  if (
+    bytes === undefined ||
+    bytes === null ||
+    bytes === '' ||
+    isNaN(Number(bytes))
+  ) {
+
+    return '-';
+
+  }
+
+
+  const value =
+    Number(bytes);
+
+
+  if (value <= 0) {
+
+    return '0 B';
+
+  }
+
+
+  const units = [
+    'B',
+    'KB',
+    'MB',
+    'GB',
+    'TB'
+  ];
+
+
+  const index =
+    Math.floor(
+      Math.log(value) /
+      Math.log(1024)
+    );
+
+
+  const safeIndex =
+    Math.min(
+      index,
+      units.length - 1
+    );
+
+
+  const number =
+    value /
+    Math.pow(
+      1024,
+      safeIndex
+    );
+
+
+  if (safeIndex === 0) {
+
+    return (
+      Math.round(number) +
+      ' ' +
+      units[safeIndex]
+    );
+
+  }
+
+
+  return (
+    number.toFixed(
+      number >= 100
+        ? 0
+        : number >= 10
+          ? 1
+          : 2
+    ) +
+    ' ' +
+    units[safeIndex]
+  );
+
+}
+
+
+/* ==========================================================
+   GET FILE SIZE
+   ========================================================== */
+
+function getFileSize(file) {
+
+  if (!file) {
+
+    return null;
+
+  }
+
+
+  const possibleValues = [
+
+    file.sizeBytes,
+
+    file.size_bytes,
+
+    file.bytes,
+
+    file.fileSize,
+
+    file.file_size,
+
+    file.size
+
+  ];
+
+
+  for (
+    let i = 0;
+    i < possibleValues.length;
+    i++
+  ) {
+
+    const value =
+      possibleValues[i];
+
+
+    if (
+      value !== undefined &&
+      value !== null &&
+      value !== '' &&
+      !isNaN(Number(value))
+    ) {
+
+      return Number(value);
+
+    }
+
+  }
+
+
+  return null;
 
 }
 
@@ -841,15 +1828,15 @@ function extractFolderId(
 ) {
 
   if (!value) {
+
     return '';
+
   }
+
 
   let text =
     String(value).trim();
 
-  /*
-   * Hilangkan whitespace yang tidak sengaja
-   */
 
   text =
     text.replace(
@@ -857,10 +1844,6 @@ function extractFolderId(
       ''
     );
 
-  /*
-   * CASE 1:
-   * ID langsung
-   */
 
   if (
     /^[a-zA-Z0-9_-]{20,}$/.test(text)
@@ -870,16 +1853,13 @@ function extractFolderId(
 
   }
 
-  /*
-   * CASE 2:
-   * /folders/ID
-   */
 
   let match =
     text.match(
       /\/folders\/([a-zA-Z0-9_-]+)/
     );
 
+
   if (
     match &&
     match[1]
@@ -889,16 +1869,13 @@ function extractFolderId(
 
   }
 
-  /*
-   * CASE 3:
-   * /d/ID
-   */
 
   match =
     text.match(
       /\/d\/([a-zA-Z0-9_-]+)/
     );
 
+
   if (
     match &&
     match[1]
@@ -908,20 +1885,18 @@ function extractFolderId(
 
   }
 
-  /*
-   * CASE 4:
-   * ?id=ID
-   */
 
   try {
 
     const url =
       new URL(text);
 
+
     const id =
       url.searchParams.get(
         'id'
       );
+
 
     if (
       id &&
@@ -934,12 +1909,8 @@ function extractFolderId(
 
   } catch (err) {
 
-    /*
-     * Bukan URL.
-     * Abaikan.
-     */
-
   }
+
 
   return '';
 
@@ -957,20 +1928,24 @@ function updateFolderPreview() {
       'folderUrl'
     );
 
+
   const preview =
     document.getElementById(
       'folderIdPreview'
     );
+
 
   const folderId =
     extractFolderId(
       input.value
     );
 
+
   if (folderId) {
 
     preview.style.display =
       'block';
+
 
     preview.innerHTML =
       'Folder ID yang akan digunakan: <b>' +
@@ -981,6 +1956,7 @@ function updateFolderPreview() {
 
     preview.style.display =
       'none';
+
 
     preview.textContent =
       '';
@@ -998,67 +1974,22 @@ async function apiGet(
   params
 ) {
 
-  /*
-   * ========================================================
-   * VALIDASI
-   * ========================================================
-   */
+  const query =
+    new URLSearchParams();
 
-  if (
-    !params ||
-    !params.action
-  ) {
-
-    /*
-     * Ping tanpa action tetap diperbolehkan.
-     */
-
-  }
-
-  /*
-   * ========================================================
-   * BUAT PARAMETER BARU
-   * ========================================================
-   */
-
-  const cleanParams =
-    {};
 
   Object.keys(
     params || {}
   ).forEach(
     function(key) {
 
-      const value =
-        params[key];
-
-      if (
-        value !== undefined &&
-        value !== null
-      ) {
-
-        cleanParams[key] =
-          String(value);
-
-      }
+      query.append(
+        key,
+        params[key]
+      );
 
     }
   );
-
-
-  /*
-   * Cache buster supaya browser tidak menggunakan
-   * redirect lama dari Apps Script.
-   */
-
-  cleanParams._ts =
-    Date.now();
-
-
-  const query =
-    new URLSearchParams(
-      cleanParams
-    );
 
 
   const url =
@@ -1076,77 +2007,17 @@ async function apiGet(
   );
 
 
-  console.log(
-    'API GET URL:',
-    url
-  );
-
-
-  let response;
-
-
-  try {
-
-    response =
-      await fetch(
-        url,
-        {
-          method:
-            'GET',
-
-          cache:
-            'no-store',
-
-          redirect:
-            'follow',
-
-          credentials:
-            'omit',
-
-          headers: {
-            'Accept':
-              'application/json'
-          }
-        }
-      );
-
-  } catch (networkError) {
-
-    throw new Error(
-      'Tidak dapat terhubung ke Google Apps Script: ' +
-      networkError.message
+  const response =
+    await fetch(
+      url
     );
 
-  }
+
+  const text =
+    await response.text();
 
 
   if (!response.ok) {
-
-    /*
-     * Ambil response text untuk debugging.
-     */
-
-    let detail =
-      '';
-
-    try {
-
-      detail =
-        await response.text();
-
-    } catch (e) {
-
-      detail =
-        '';
-
-    }
-
-    console.error(
-      'API GET ERROR:',
-      response.status,
-      detail
-    );
-
 
     throw new Error(
       'HTTP ' +
@@ -1161,36 +2032,19 @@ async function apiGet(
   }
 
 
-  const text =
-    await response.text();
+  const result =
+    JSON.parse(text);
 
 
-  if (!text) {
-
-    throw new Error(
-      'Response API kosong.'
-    );
-
-  }
-
-
-  let result;
-
-
-  try {
-
-    result =
-      JSON.parse(text);
-
-  } catch (err) {
-
-    console.error(
-      'RESPONSE API BUKAN JSON:',
-      text
-    );
+  if (
+    result &&
+    result.success === false
+  ) {
 
     throw new Error(
-      'Response API bukan JSON.'
+      result.error ||
+      result.message ||
+      'API error'
     );
 
   }
@@ -1215,73 +2069,35 @@ async function apiPost(
   );
 
 
-  let response;
+  const response =
+    await fetch(
+      API_URL,
+      {
+        method:
+          'POST',
 
+        mode:
+          'cors',
 
-  try {
+        headers: {
 
-    response =
-      await fetch(
-        API_URL,
-        {
-          method:
-            'POST',
+          'Content-Type':
+            'text/plain;charset=utf-8'
 
-          headers: {
-            'Content-Type':
-              'text/plain;charset=utf-8',
+        },
 
-            'Accept':
-              'application/json'
-          },
+        body:
+          JSON.stringify(data)
 
-          body:
-            JSON.stringify(data),
-
-          cache:
-            'no-store',
-
-          redirect:
-            'follow',
-
-          credentials:
-            'omit'
-        }
-      );
-
-  } catch (networkError) {
-
-    throw new Error(
-      'Tidak dapat terhubung ke Google Apps Script: ' +
-      networkError.message
+      }
     );
 
-  }
+
+  const text =
+    await response.text();
 
 
   if (!response.ok) {
-
-    let detail =
-      '';
-
-    try {
-
-      detail =
-        await response.text();
-
-    } catch (e) {
-
-      detail =
-        '';
-
-    }
-
-    console.error(
-      'API POST ERROR:',
-      response.status,
-      detail
-    );
-
 
     throw new Error(
       'HTTP ' +
@@ -1293,36 +2109,19 @@ async function apiPost(
   }
 
 
-  const text =
-    await response.text();
+  const result =
+    JSON.parse(text);
 
 
-  if (!text) {
-
-    throw new Error(
-      'Response POST kosong.'
-    );
-
-  }
-
-
-  let result;
-
-
-  try {
-
-    result =
-      JSON.parse(text);
-
-  } catch (err) {
-
-    console.error(
-      'RESPONSE POST BUKAN JSON:',
-      text
-    );
+  if (
+    result &&
+    result.success === false
+  ) {
 
     throw new Error(
-      'Response POST bukan JSON.'
+      result.error ||
+      result.message ||
+      'API error'
     );
 
   }
@@ -1355,9 +2154,11 @@ async function testAPI() {
         true
       );
 
+
       log(
         'TEST API berhasil.'
       );
+
 
       return true;
 
@@ -1380,10 +2181,12 @@ async function testAPI() {
       false
     );
 
+
     log(
       'TEST API GAGAL: ' +
       err.message
     );
+
 
     return false;
 
@@ -1428,16 +2231,6 @@ async function scanFolder() {
   }
 
 
-  /*
-   * ========================================================
-   * PENTING:
-   * Ambil ID folder di browser.
-   *
-   * Backend sekarang menerima ID bersih,
-   * bukan URL panjang.
-   * ========================================================
-   */
-
   const folderId =
     extractFolderId(
       folderValue
@@ -1447,9 +2240,7 @@ async function scanFolder() {
   if (!folderId) {
 
     alert(
-      'URL / ID Folder Google Drive tidak valid.\n\n' +
-      'Pastikan menggunakan URL folder seperti:\n' +
-      'https://drive.google.com/drive/folders/ID_FOLDER'
+      'URL / ID Folder Google Drive tidak valid.'
     );
 
     log(
@@ -1528,12 +2319,6 @@ async function scanFolder() {
 
   try {
 
-    /*
-     * ======================================================
-     * KIRIM ID FOLDER SAJA
-     * ======================================================
-     */
-
     const result =
       await apiGet({
 
@@ -1572,13 +2357,6 @@ async function scanFolder() {
     }
 
 
-    /*
-     * ======================================================
-     * SIMPAN NAMA FOLDER
-     * Untuk nama ZIP.
-     * ======================================================
-     */
-
     window.currentFolderName =
       result.folderName ||
       result.folder_name ||
@@ -1588,12 +2366,6 @@ async function scanFolder() {
     window.lastScannedFolderName =
       window.currentFolderName;
 
-
-    /*
-     * ======================================================
-     * DATA FILE
-     * ======================================================
-     */
 
     filesData =
       (result.files || [])
@@ -1743,22 +2515,42 @@ function renderTable() {
 
       const statusHtml =
         file.status === 'converted'
+
           ? `
             <span class="status status-done">
-              SUDAH CONVERT
+              ✓ SUDAH CONVERT
             </span>
           `
+
           : file.status === 'error'
+
             ? `
               <span class="status status-error">
-                GAGAL
+                ✕ GAGAL
               </span>
             `
-          : `
-            <span class="status status-new">
-              BELUM CONVERT
-            </span>
-          `;
+
+            : `
+              <span class="status status-new">
+                ● BELUM CONVERT
+              </span>
+            `;
+
+
+      const sizeBytes =
+        getFileSize(file);
+
+
+      const sizeText =
+        file.sizeText ||
+        file.size_text ||
+        (
+          sizeBytes !== null
+            ? formatFileSize(
+                sizeBytes
+              )
+            : '-'
+        );
 
 
       tr.innerHTML = `
@@ -1781,28 +2573,45 @@ function renderTable() {
 
         <td>
 
-          <div style="font-weight:600;">
-            ${escapeHtml(file.name)}
+          <div class="file-name">
+            ${escapeHtml(
+              file.name ||
+              'Tanpa nama'
+            )}
           </div>
 
-          <div class="small">
-            ${escapeHtml(file.id)}
+          <div class="file-id">
+            ${escapeHtml(
+              file.id ||
+              ''
+            )}
           </div>
 
         </td>
 
         <td>
-          ${escapeHtml(file.sizeText || '-')}
+
+          <span class="file-size">
+            ${escapeHtml(
+              sizeText
+            )}
+          </span>
+
         </td>
 
         <td>
+
           ${statusHtml}
+
         </td>
 
         <td>
 
-          <span class="badge">
-            ${escapeHtml(file.path || '-')}
+          <span class="path-badge">
+            ${escapeHtml(
+              file.path ||
+              '-'
+            )}
           </span>
 
         </td>
@@ -1902,7 +2711,9 @@ function updateMasterCheck() {
   const selected =
     filesData.filter(
       function(f) {
+
         return f.selected;
+
       }
     ).length;
 
@@ -2027,11 +2838,6 @@ async function convertAll() {
   }
 
 
-  /*
-   * SEMUA FILE BOLEH DIPROSES ULANG.
-   * History TIDAK MEMBLOKIR.
-   */
-
   await processFiles(
     filesData.slice()
   );
@@ -2062,14 +2868,6 @@ async function processFiles(
     true
   );
 
-
-  /*
-   * ========================================================
-   * SEMUA FILE DIPROSES.
-   *
-   * Tidak ada filter !file.converted.
-   * ========================================================
-   */
 
   const processList =
     Array.isArray(list)
@@ -2216,24 +3014,12 @@ async function processFiles(
           };
 
 
-        /*
-         * ==================================================
-         * CONVERT SATU FILE
-         * ==================================================
-         */
-
         const finalBlob =
           await processOneFile(
             file,
             progressCallback
           );
 
-
-        /*
-         * ==================================================
-         * VALIDASI PDF
-         * ==================================================
-         */
 
         if (
           !finalBlob ||
@@ -2247,12 +3033,6 @@ async function processFiles(
 
         }
 
-
-        /*
-         * ==================================================
-         * SIMPAN HASIL
-         * ==================================================
-         */
 
         successfulFiles.push({
 
@@ -2279,12 +3059,6 @@ async function processFiles(
         });
 
 
-        /*
-         * ==================================================
-         * STATUS BERHASIL
-         * ==================================================
-         */
-
         file.converted =
           true;
 
@@ -2292,15 +3066,6 @@ async function processFiles(
         file.status =
           'converted';
 
-
-        /*
-         * ==================================================
-         * HISTORY
-         *
-         * HANYA INFORMASI.
-         * TIDAK MENGHALANGI CONVERSION BERIKUTNYA.
-         * ==================================================
-         */
 
         try {
 
@@ -2385,12 +3150,6 @@ async function processFiles(
 
     }
 
-
-    /*
-     * ========================================================
-     * DOWNLOAD
-     * ========================================================
-     */
 
     if (
       successfulFiles.length > 0
@@ -2486,12 +3245,6 @@ async function processOneFile(
 
     progressCallback(5);
 
-
-    /*
-     * ========================================================
-     * DIRECT PDF
-     * ========================================================
-     */
 
     log(
       'Mencoba konversi langsung: ' +
@@ -2601,12 +3354,6 @@ async function processOneFile(
     }
 
 
-    /*
-     * ========================================================
-     * LARGE FILE / CHUNK
-     * ========================================================
-     */
-
     const finalBlob =
       await convertLargeFile(
         file,
@@ -2675,18 +3422,24 @@ async function convertLargeFile(
 
 
   /*
-   * ========================================================
-   * SLIDE INFO
-   * ========================================================
+   * PENTING:
+   * slide_info menggunakan POST.
+   * Jangan diganti menjadi GET.
    */
 
   const info =
-    await apiGet({
+    await apiPost({
 
       action:
         'slide_info',
 
-      presentation_id:
+      id:
+        file.id,
+
+      fileId:
+        file.id,
+
+      presentationId:
         file.id
 
     });
@@ -2760,12 +3513,6 @@ async function convertLargeFile(
     chunkSize
   );
 
-
-  /*
-   * ========================================================
-   * PROSES CHUNK
-   * ========================================================
-   */
 
   const pdfChunks =
     [];
@@ -2875,12 +3622,6 @@ async function convertLargeFile(
   }
 
 
-  /*
-   * ========================================================
-   * GABUNGKAN PDF
-   * ========================================================
-   */
-
   log(
     'Semua chunk berhasil.'
   );
@@ -2959,16 +3700,12 @@ async function convertLargeFile(
   }
 
 
-  /*
-   * ========================================================
-   * PDF FINAL
-   * ========================================================
-   */
-
   const finalBytes =
     await finalPdf.save({
+
       useObjectStreams:
         true
+
     });
 
 
@@ -3032,9 +3769,7 @@ async function downloadResults(
 
 
   /*
-   * ========================================================
    * 1 FILE → PDF
-   * ========================================================
    */
 
   if (
@@ -3097,9 +3832,7 @@ async function downloadResults(
 
 
   /*
-   * ========================================================
    * BANYAK FILE → ZIP
-   * ========================================================
    */
 
   if (
@@ -3158,9 +3891,7 @@ async function downloadResults(
 
 
   /*
-   * ========================================================
    * NAMA ZIP = NAMA FOLDER
-   * ========================================================
    */
 
   let folderName =
@@ -3393,22 +4124,27 @@ function escapeHtml(
       ? ''
       : value
   )
+
     .replace(
       /&/g,
       '&amp;'
     )
+
     .replace(
       /</g,
       '&lt;'
     )
+
     .replace(
       />/g,
       '&gt;'
     )
+
     .replace(
       /"/g,
       '&quot;'
     )
+
     .replace(
       /'/g,
       '&#039;'
