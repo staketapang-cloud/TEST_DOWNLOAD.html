@@ -1791,98 +1791,152 @@ async function processFiles(
 /* ==========================================================
    PROCESS ONE FILE
    ========================================================== */
+async function processOneFile(file, index, total) {
 
-async function processOneFile(
-  file,
-  progressCallback
-) {
-
-  progressCallback(5);
-
-  log(
-    'Mencoba export PDF langsung...'
-  );
-
-  let direct;
+  log(`Memproses: ${file.name}`);
 
   try {
 
-    direct =
-      await apiPost({
+    /*
+     * ============================================================
+     * TIDAK ADA LAGI PENGECEKAN HISTORY SEBAGAI PENGHALANG
+     * File yang sudah pernah dikonversi tetap BOLEH dikonversi lagi.
+     * ============================================================
+     */
 
-        action:
-          'convert_one',
+    setProgress(
+      Math.round((index / total) * 100),
+      `Mengonversi ${index} dari ${total}: ${file.name}`
+    );
 
-        presentation_id:
-          file.id,
+    /*
+     * ============================================================
+     * LANGKAH 1
+     * Coba konversi langsung terlebih dahulu.
+     * ============================================================
+     */
 
-        file_name:
-          file.name
+    log(`Mencoba konversi langsung: ${file.name}`);
 
+    try {
+
+      const result = await apiPost({
+        action: 'convert_one',
+        file_id: file.id,
+        file_name: file.name
       });
 
-  } catch (err) {
+      if (result && result.success && result.pdf_base64) {
 
-    log(
-      'Export langsung tidak dapat diselesaikan: ' +
-      err.message
-    );
+        const pdfBytes = base64ToUint8Array(result.pdf_base64);
 
-    direct = {
+        /*
+         * Simpan hasil PDF
+         */
+        conversionResults.push({
+          id: file.id,
+          name: file.name,
+          pdfBytes: pdfBytes
+        });
 
-      success:
-        false,
+        /*
+         * Tandai history setelah PDF berhasil dibuat.
+         * History TIDAK digunakan untuk memblokir konversi berikutnya.
+         */
+        try {
 
-      exportTooLarge:
-        true
+          await apiPost({
+            action: 'mark_converted',
+            file_id: file.id,
+            file_name: file.name
+          });
 
-    };
+        } catch (historyError) {
 
-  }
+          console.warn(
+            'Gagal mencatat history:',
+            historyError
+          );
 
-  progressCallback(25);
+        }
 
-  if (
-    direct &&
-    direct.success &&
-    direct.base64
-  ) {
+        log(`✓ Berhasil: ${file.name}`);
 
-    log(
-      'PDF langsung berhasil.'
-    );
+        return true;
+      }
 
-    const bytes =
-      base64ToUint8Array(
-        direct.base64
+      /*
+       * Jika backend memberitahu export terlalu besar,
+       * lanjut ke metode chunk.
+       */
+      if (
+        result &&
+        (
+          result.export_too_large === true ||
+          result.error_code === 'EXPORT_TOO_LARGE'
+        )
+      ) {
+
+        log(
+          `File besar, menggunakan metode chunk: ${file.name}`
+        );
+
+        return await convertLargeFile(
+          file,
+          index,
+          total
+        );
+      }
+
+      /*
+       * Kalau respons tidak sesuai, coba metode chunk
+       * agar file tetap mempunyai kesempatan dikonversi.
+       */
+      log(
+        `Konversi langsung tidak berhasil, mencoba metode chunk: ${file.name}`
       );
 
-    return new Blob(
-      [bytes],
-      {
-        type:
-          'application/pdf'
-      }
+    } catch (directError) {
+
+      console.warn(
+        'Konversi langsung gagal:',
+        directError
+      );
+
+      log(
+        `Konversi langsung gagal, mencoba metode chunk: ${file.name}`
+      );
+    }
+
+
+    /*
+     * ============================================================
+     * LANGKAH 2
+     * Metode chunk untuk file besar.
+     * ============================================================
+     */
+
+    return await convertLargeFile(
+      file,
+      index,
+      total
     );
 
+
+  } catch (error) {
+
+    console.error(
+      `Gagal memproses ${file.name}:`,
+      error
+    );
+
+    log(
+      `✗ GAGAL: ${file.name} — ${error.message || error}`
+    );
+
+    return false;
   }
-
-  log(
-    'Export langsung tidak digunakan.'
-  );
-
-  log(
-    'Menggunakan fallback MEDIUM PNG.'
-  );
-
-  return await convertLargeFile(
-    file,
-    progressCallback
-  );
-
 }
-
-
 /* ==========================================================
    CONVERT LARGE FILE
    ========================================================== */
@@ -2147,122 +2201,240 @@ async function convertLargeFile(
 /* ==========================================================
    DOWNLOAD RESULTS
    ========================================================== */
-
-async function downloadResults(
-  results
-) {
-
-  if (!results.length) {
-
-    log(
-      'Tidak ada PDF berhasil dibuat.'
-    );
-
-    return;
-
-  }
-
-  /*
-   * 1 FILE
-   * langsung PDF
-   */
+async function downloadResults() {
 
   if (
-    results.length === 1
+    !conversionResults ||
+    conversionResults.length === 0
   ) {
 
-    const item =
-      results[0];
-
-    const filename =
-      sanitizeFileName(
-        item.file.name
-      ) +
-      '.pdf';
-
-    downloadBlob(
-      item.blob,
-      filename
-    );
-
-    log(
-      'Download 1 PDF dimulai: ' +
-      filename
+    alert(
+      'Belum ada hasil PDF yang siap didownload.'
     );
 
     return;
-
   }
 
+
   /*
-   * >1 FILE
-   * ZIP
+   * ============================================================
+   * JIKA HANYA 1 PDF
+   * Download langsung sebagai PDF.
+   * ============================================================
    */
 
-  log(
-    'Menyiapkan ZIP untuk ' +
-    results.length +
-    ' PDF...'
-  );
+  if (conversionResults.length === 1) {
 
-  const zip =
-    new JSZip();
+    const item = conversionResults[0];
 
-  results.forEach(
-    function(item) {
-
-      const filename =
-        sanitizeFileName(
-          item.file.name
-        ) +
-        '.pdf';
-
-      zip.file(
-        filename,
-        item.blob
-      );
-
-    }
-  );
-
-  const zipBlob =
-    await zip.generateAsync(
+    const blob = new Blob(
+      [item.pdfBytes],
       {
-        type:
-          'blob',
-
-        compression:
-          'DEFLATE',
-
-        compressionOptions:
-          {
-            level:
-              6
-          }
-
-      },
-
-      function(metadata) {
-
-        showProgress(
-          'Membuat ZIP...',
-          metadata.percent
-        );
-
+        type: 'application/pdf'
       }
     );
 
-  downloadBlob(
-    zipBlob,
-    'Google_Slides_PDF.zip'
-  );
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+
+    a.href = url;
+
+    a.download =
+      sanitizeFileName(item.name) + '.pdf';
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
+
+    log(
+      `Download PDF selesai: ${item.name}.pdf`
+    );
+
+    return;
+  }
+
+
+  /*
+   * ============================================================
+   * JIKA LEBIH DARI 1 PDF
+   * Buat ZIP.
+   *
+   * NAMA ZIP = NAMA FOLDER GOOGLE DRIVE
+   * ============================================================
+   */
+
+  if (
+    typeof JSZip === 'undefined'
+  ) {
+
+    alert(
+      'JSZip belum berhasil dimuat.'
+    );
+
+    return;
+  }
+
+
+  const zip = new JSZip();
+
+
+  /*
+   * ============================================================
+   * MASUKKAN SEMUA PDF KE ZIP
+   * ============================================================
+   */
+
+  conversionResults.forEach((item) => {
+
+    let pdfName =
+      sanitizeFileName(item.name);
+
+    /*
+     * Pastikan extension .pdf hanya satu kali.
+     */
+    if (
+      !pdfName
+        .toLowerCase()
+        .endsWith('.pdf')
+    ) {
+
+      pdfName += '.pdf';
+    }
+
+    zip.file(
+      pdfName,
+      item.pdfBytes
+    );
+
+  });
+
+
+  /*
+   * ============================================================
+   * AMBIL NAMA FOLDER DARI INPUT FOLDER URL
+   *
+   * Kita coba ambil nama folder dari hasil scan terlebih dahulu.
+   * Jika tidak tersedia, gunakan nama folder default.
+   * ============================================================
+   */
+
+  let folderName =
+    window.currentFolderName ||
+    window.lastScannedFolderName ||
+    'Google Slides';
+
+
+  /*
+   * Bersihkan nama folder agar aman menjadi nama ZIP.
+   */
+  folderName =
+    sanitizeFileName(folderName);
+
+
+  if (!folderName) {
+
+    folderName =
+      'Google Slides';
+
+  }
+
+
+  /*
+   * ============================================================
+   * BUAT ZIP
+   * ============================================================
+   */
 
   log(
-    'ZIP berhasil dibuat dan download dimulai.'
+    `Membuat ZIP: ${folderName}.zip`
   );
 
-}
+  setProgress(
+    95,
+    'Membuat file ZIP...'
+  );
 
+
+  try {
+
+    const zipBlob =
+      await zip.generateAsync({
+        type: 'blob',
+        compression: 'DEFLATE',
+        compressionOptions: {
+          level: 6
+        }
+      });
+
+
+    /*
+     * ============================================================
+     * DOWNLOAD ZIP
+     * ============================================================
+     */
+
+    const url =
+      URL.createObjectURL(zipBlob);
+
+    const a =
+      document.createElement('a');
+
+    a.href = url;
+
+    a.download =
+      folderName + '.zip';
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+
+    setTimeout(() => {
+
+      URL.revokeObjectURL(url);
+
+    }, 2000);
+
+
+    setProgress(
+      100,
+      'Download ZIP selesai.'
+    );
+
+    log(
+      `✓ ZIP berhasil dibuat: ${folderName}.zip`
+    );
+
+  } catch (error) {
+
+    console.error(
+      'Gagal membuat ZIP:',
+      error
+    );
+
+    log(
+      `✗ Gagal membuat ZIP: ${
+        error.message || error
+      }`
+    );
+
+    alert(
+      'Gagal membuat file ZIP: ' +
+      (error.message || error)
+    );
+
+  }
+
+}
 
 /* ==========================================================
    BASE64 → UINT8ARRAY
