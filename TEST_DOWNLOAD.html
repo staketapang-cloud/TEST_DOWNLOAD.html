@@ -1,2687 +1,1225 @@
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
-
-<title>Slide to PDF Converter</title>
-
-
-<!-- ========================================================
-     JS ZIP
-     ======================================================== -->
-
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
-</script>
-
-
-<!-- ========================================================
-     PDF LIB
-     ======================================================== -->
-
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js">
-</script>
-
-
-<style>
-
-* {
-  box-sizing: border-box;
-}
-
-
-body {
-
-  margin: 0;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  background:
-    #f4f6f8;
-
-  color:
-    #1f2937;
-}
-
-
-.container {
-
-  width:
-    min(1200px, 94%);
-
-  margin:
-    30px auto;
-}
-
-
-.header {
-
-  background:
-    white;
-
-  border-radius:
-    16px;
-
-  padding:
-    24px;
-
-  box-shadow:
-    0 4px 20px
-    rgba(0,0,0,.08);
-
-  margin-bottom:
-    20px;
-}
-
-
-.header h1 {
-
-  margin:
-    0 0 8px 0;
-
-  font-size:
-    26px;
-}
-
-
-.header p {
-
-  margin:
-    0;
-
-  color:
-    #6b7280;
-}
-
-
-.card {
-
-  background:
-    white;
-
-  border-radius:
-    16px;
-
-  padding:
-    20px;
-
-  margin-bottom:
-    20px;
-
-  box-shadow:
-    0 4px 20px
-    rgba(0,0,0,.06);
-}
-
-
-label {
-
-  display:
-    block;
-
-  font-weight:
-    700;
-
-  margin-bottom:
-    8px;
-}
-
-
-input[type="text"] {
-
-  width:
-    100%;
-
-  padding:
-    13px;
-
-  border:
-    1px solid #d1d5db;
-
-  border-radius:
-    10px;
-
-  font-size:
-    15px;
-
-  outline:
-    none;
-}
-
-
-input[type="text"]:focus {
-
-  border-color:
-    #2563eb;
-}
-
-
-.row {
-
-  display:
-    flex;
-
-  gap:
-    10px;
-
-  flex-wrap:
-    wrap;
-
-  align-items:
-    center;
-}
-
-
-button {
-
-  border:
-    0;
-
-  border-radius:
-    10px;
-
-  padding:
-    12px 18px;
-
-  font-weight:
-    700;
-
-  cursor:
-    pointer;
-
-  font-size:
-    14px;
-}
-
-
-.btn-primary {
-
-  background:
-    #2563eb;
-
-  color:
-    white;
-}
-
-
-.btn-success {
-
-  background:
-    #16a34a;
-
-  color:
-    white;
-}
-
-
-.btn-danger {
-
-  background:
-    #dc2626;
-
-  color:
-    white;
-}
-
-
-.btn-secondary {
-
-  background:
-    #e5e7eb;
-
-  color:
-    #111827;
-}
-
-
-button:disabled {
-
-  opacity:
-    .5;
-
-  cursor:
-    not-allowed;
-}
-
-
-.check {
-
-  display:
-    flex;
-
-  gap:
-    8px;
-
-  align-items:
-    center;
-
-  margin-top:
-    12px;
-
-  font-size:
-    14px;
-}
-
-
-.summary {
-
-  display:
-    grid;
-
-  grid-template-columns:
-    repeat(4, 1fr);
-
-  gap:
-    12px;
-
-  margin-top:
-    20px;
-}
-
-
-.summary-box {
-
-  background:
-    #f8fafc;
-
-  border:
-    1px solid #e5e7eb;
-
-  border-radius:
-    12px;
-
-  padding:
-    15px;
-}
-
-
-.summary-title {
-
-  font-size:
-    12px;
-
-  color:
-    #6b7280;
-
-  margin-bottom:
-    5px;
-}
-
-
-.summary-value {
-
-  font-size:
-    25px;
-
-  font-weight:
-    800;
-}
-
-
-.table-wrap {
-
-  overflow-x:
-    auto;
-}
-
-
-table {
-
-  width:
-    100%;
-
-  border-collapse:
-    collapse;
-
-  margin-top:
-    15px;
-}
-
-
-th,
-td {
-
-  padding:
-    11px;
-
-  border-bottom:
-    1px solid #e5e7eb;
-
-  text-align:
-    left;
-
-  font-size:
-    13px;
-}
-
-
-th {
-
-  background:
-    #f8fafc;
-}
-
-
-.status {
-
-  font-weight:
-    700;
-}
-
-
-.progress-box {
-
-  margin-top:
-    15px;
-
-  padding:
-    15px;
-
-  border:
-    1px solid #e5e7eb;
-
-  border-radius:
-    12px;
-
-  background:
-    #fafafa;
-}
-
-
-.progress-top {
-
-  display:
-    flex;
-
-  justify-content:
-    space-between;
-
-  margin-bottom:
-    8px;
-
-  font-weight:
-    700;
-}
-
-
-.progress-bar {
-
-  width:
-    100%;
-
-  height:
-    18px;
-
-  background:
-    #e5e7eb;
-
-  border-radius:
-    999px;
-
-  overflow:
-    hidden;
-}
-
-
-.progress-fill {
-
-  width:
-    0%;
-
-  height:
-    100%;
-
-  background:
-    #2563eb;
-
-  transition:
-    width .25s ease;
-}
-
-
-.log {
-
-  margin-top:
-    15px;
-
-  background:
-    #111827;
-
-  color:
-    #e5e7eb;
-
-  border-radius:
-    12px;
-
-  padding:
-    15px;
-
-  height:
-    250px;
-
-  overflow-y:
-    auto;
-
-  font-family:
-    Consolas,
-    monospace;
-
-  font-size:
-    12px;
-
-  line-height:
-    1.6;
-}
-
-
-.badge {
-
-  display:
-    inline-block;
-
-  padding:
-    5px 9px;
-
-  border-radius:
-    999px;
-
-  font-size:
-    11px;
-
-  font-weight:
-    700;
-}
-
-
-.badge-wait {
-
-  background:
-    #fef3c7;
-
-  color:
-    #92400e;
-}
-
-
-.badge-success {
-
-  background:
-    #dcfce7;
-
-  color:
-    #166534;
-}
-
-
-.badge-error {
-
-  background:
-    #fee2e2;
-
-  color:
-    #991b1b;
-}
-
-
-@media(max-width:800px) {
-
-  .summary {
-
-    grid-template-columns:
-      repeat(2, 1fr);
-  }
-
-}
-
-
-@media(max-width:500px) {
-
-  .summary {
-
-    grid-template-columns:
-      1fr;
-  }
-
-
-  button {
-
-    width:
-      100%;
-  }
-
-}
-
-</style>
-
-</head>
-
-
-<body>
-
-
-<div class="container">
-
-
-  <!-- ======================================================
-       HEADER
-       ====================================================== -->
-
-  <div class="header">
-
-    <h1>
-      Google Slides → PDF Converter
-    </h1>
-
-    <p>
-      1 Google Slides = 1 PDF final
-    </p>
-
-  </div>
-
-
-  <!-- ======================================================
-       FOLDER
-       ====================================================== -->
-
-  <div class="card">
-
-    <label>
-      Folder Google Drive
-    </label>
-
-    <input
-      type="text"
-      id="folderUrl"
-      placeholder="Tempel URL folder Google Drive di sini"
-    >
-
-
-    <div class="check">
-
-      <input
-        type="checkbox"
-        id="recursive"
-      >
-
-      <span>
-        Scan subfolder
-      </span>
-
-    </div>
-
-
-    <div class="check">
-
-      <input
-        type="checkbox"
-        id="forceConvert"
-      >
-
-      <span>
-        Force Convert
-      </span>
-
-    </div>
-
-
-    <div class="row" style="margin-top:15px;">
-
-      <button
-        class="btn-primary"
-        id="btnScan"
-        onclick="scanFolder()"
-      >
-        SCAN FOLDER
-      </button>
-
-
-      <button
-        class="btn-success"
-        id="btnConvertSelected"
-        onclick="convertSelected()"
-        disabled
-      >
-        CONVERT TERPILIH
-      </button>
-
-
-      <button
-        class="btn-success"
-        id="btnConvertAll"
-        onclick="convertAll()"
-        disabled
-      >
-        CONVERT SEMUA
-      </button>
-
-
-      <button
-        class="btn-secondary"
-        onclick="clearHistory()"
-      >
-        HAPUS HISTORY
-      </button>
-
-    </div>
-
-
-    <!-- ====================================================
-         SUMMARY
-         ==================================================== -->
-
-    <div class="summary">
-
-      <div class="summary-box">
-
-        <div class="summary-title">
-          DITEMUKAN
-        </div>
-
-        <div
-          class="summary-value"
-          id="countFound"
-        >
-          0
-        </div>
-
-      </div>
-
-
-      <div class="summary-box">
-
-        <div class="summary-title">
-          DIPILIH
-        </div>
-
-        <div
-          class="summary-value"
-          id="countSelected"
-        >
-          0
-        </div>
-
-      </div>
-
-
-      <div class="summary-box">
-
-        <div class="summary-title">
-          BERHASIL
-        </div>
-
-        <div
-          class="summary-value"
-          id="countSuccess"
-        >
-          0
-        </div>
-
-      </div>
-
-
-      <div class="summary-box">
-
-        <div class="summary-title">
-          GAGAL
-        </div>
-
-        <div
-          class="summary-value"
-          id="countFailed"
-        >
-          0
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- ======================================================
-       FILE TABLE
-       ====================================================== -->
-
-  <div class="card">
-
-    <div class="row">
-
-      <button
-        class="btn-secondary"
-        onclick="selectAll()"
-      >
-        PILIH SEMUA
-      </button>
-
-
-      <button
-        class="btn-secondary"
-        onclick="deselectAll()"
-      >
-        BATAL PILIH
-      </button>
-
-    </div>
-
-
-    <div class="table-wrap">
-
-      <table>
-
-        <thead>
-
-          <tr>
-
-            <th>
-              <input
-                type="checkbox"
-                id="checkAll"
-                onchange="toggleAll(this.checked)"
-              >
-            </th>
-
-            <th>
-              NO
-            </th>
-
-            <th>
-              NAMA GOOGLE SLIDES
-            </th>
-
-            <th>
-              STATUS
-            </th>
-
-          </tr>
-
-        </thead>
-
-        <tbody
-          id="fileTableBody"
-        >
-
-          <tr>
-
-            <td
-              colspan="4"
-              style="text-align:center;"
-            >
-              Belum ada data.
-            </td>
-
-          </tr>
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-
-  <!-- ======================================================
-       PROGRESS
-       ====================================================== -->
-
-  <div class="card">
-
-    <h3>
-      Progress Conversion
-    </h3>
-
-
-    <div class="progress-box">
-
-      <div class="progress-top">
-
-        <span id="progressLabel">
-          Siap.
-        </span>
-
-        <span id="progressPercent">
-          0%
-        </span>
-
-      </div>
-
-
-      <div class="progress-bar">
-
-        <div
-          class="progress-fill"
-          id="progressFill"
-        ></div>
-
-      </div>
-
-    </div>
-
-
-    <div
-      class="log"
-      id="log"
-    ></div>
-
-  </div>
-
-
-</div>
-
-
-<script>
-
-/* ==========================================================
-   CONFIG
-   ========================================================== */
-
-const API_URL =
-  'https://script.google.com/macros/s/AKfycbzi0Z6VaceKXwHtAGFUwrSjBYNgeeKCc1CQV5apiSUpygUuojaMPl95vUhlqwwSqzxLoA/exec';
+/* ============================================================
+   GOOGLE SLIDES → PDF CONVERTER
+   HIGH QUALITY PNG → PDF
+   ============================================================
+
+   ARSITEKTUR:
+
+   GITHUB PAGES
+        ↓
+   GOOGLE APPS SCRIPT
+        ↓
+   GOOGLE DRIVE
+        ↓
+   GOOGLE SLIDES
+        ↓
+   LARGE PNG THUMBNAIL
+        ↓
+   PDF
+        ↓
+   BROWSER
+
+   FITUR:
+
+   - Scan folder Google Drive
+   - Recursive scan
+   - Deteksi Google Slides
+   - Skip file yang sudah pernah dikonversi
+   - Force Convert
+   - Google Export PDF untuk file normal
+   - HIGH QUALITY fallback untuk file besar
+   - Thumbnail SIZE = LARGE
+   - PNG langsung
+   - TIDAK ADA PNG → JPG
+   - 1 Google Slides = 1 PDF final
+   - Browser membuat 1 PDF final
+   - Tidak membuat PDF per slide
+   - Chunk hanya untuk transport data
+   - PDF tetap satu
+   ============================================================ */
+
+
+/* ============================================================
+   KONFIGURASI
+   ============================================================ */
+
+const APP_NAME = 'SLIDE TO PDF CONVERTER';
+
+const MIME_GOOGLE_SLIDES =
+  'application/vnd.google-apps.presentation';
+
+const MIME_PDF =
+  'application/pdf';
+
+const MIME_PNG =
+  'image/png';
+
+const CACHE_SKIP_KEY =
+  'CONVERTED_SLIDES_HISTORY_V1';
+
+const MAX_HISTORY = 5000;
 
 
 /*
- * Harus sama dengan Apps Script.
- */
-const CHUNK_SIZE = 20;
+   PENTING:
+
+   LARGE = kualitas thumbnail tertinggi
+   yang tersedia melalui Slides API.
+
+   Jangan ubah menjadi SMALL.
+*/
+const FALLBACK_THUMBNAIL_SIZE = 'LARGE';
 
 
-/* ==========================================================
-   GLOBAL
-   ========================================================== */
+/*
+   Jumlah slide yang dikirim dalam satu request.
 
-let files = [];
+   LARGE PNG jauh lebih besar daripada SMALL.
 
-let historyIds = new Set();
+   8 dipilih agar:
+   - request tidak terlalu berat
+   - mengurangi risiko Failed to fetch
+   - tetap cukup cepat
+*/
+const LARGE_PNG_CHUNK_SIZE = 8;
 
-let converting = false;
+
+/* ============================================================
+   RESPONSE JSON
+   ============================================================ */
+
+function jsonResponse(data) {
+
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
 
 
-/* ==========================================================
-   INIT
-   ========================================================== */
+/* ============================================================
+   GET SHEET / BASIC
+   ============================================================ */
 
-document.addEventListener(
-  'DOMContentLoaded',
-  async function() {
+function doGet(e) {
 
-    log(
-      'SLIDE TO PDF CONVERTER siap.'
-    );
+  try {
 
-    log(
-      'Engine: FAST SINGLE PDF.'
-    );
+    return jsonResponse({
+      success: true,
+      app: APP_NAME,
+      message: 'Google Slides → PDF Converter API aktif.',
+      timestamp: new Date().toISOString()
+    });
 
-    log(
-      '1 Google Slides = 1 PDF final.'
-    );
+  } catch (err) {
 
-    log(
-      'Large file memakai thumbnail batch.'
-    );
-
-    await loadHistory();
-
+    return jsonResponse({
+      success: false,
+      error: err.message
+    });
   }
-);
-
-
-/* ==========================================================
-   LOG
-   ========================================================== */
-
-function log(message) {
-
-  const box =
-    document.getElementById(
-      'log'
-    );
-
-
-  const now =
-    new Date();
-
-
-  const time =
-    now.toLocaleTimeString(
-      'id-ID'
-    );
-
-
-  box.innerHTML +=
-    '[' +
-    time +
-    '] ' +
-    escapeHtml(message) +
-    '<br>';
-
-
-  box.scrollTop =
-    box.scrollHeight;
 }
 
 
-/* ==========================================================
-   ESCAPE HTML
-   ========================================================== */
+/* ============================================================
+   POST
+   ============================================================ */
 
-function escapeHtml(value) {
+function doPost(e) {
 
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
-}
+  try {
 
+    let data = {};
 
-/* ==========================================================
-   API POST
-   ========================================================== */
+    /*
+       JSON body
+    */
+    if (e && e.postData && e.postData.contents) {
 
-async function apiPost(data) {
+      try {
 
-  const response =
-    await fetch(
-      API_URL,
-      {
+        data = JSON.parse(e.postData.contents);
 
-        method:
-          'POST',
+      } catch (jsonError) {
 
-        headers: {
-          'Content-Type':
-            'text/plain;charset=utf-8'
-        },
-
-        body:
-          JSON.stringify(data)
-
+        data = e.parameter || {};
       }
+
+    } else {
+
+      data = e.parameter || {};
+    }
+
+
+    const action =
+      String(data.action || '')
+        .trim()
+        .toLowerCase();
+
+
+    /* --------------------------------------------------------
+       SCAN
+       -------------------------------------------------------- */
+
+    if (action === 'scan_folder') {
+
+      return jsonResponse(
+        scanFolderAPI(data)
+      );
+    }
+
+
+    /* --------------------------------------------------------
+       SLIDE INFO
+       -------------------------------------------------------- */
+
+    if (action === 'slide_info') {
+
+      return jsonResponse(
+        slideInfoAPI(data)
+      );
+    }
+
+
+    /* --------------------------------------------------------
+       NORMAL CONVERSION
+       -------------------------------------------------------- */
+
+    if (action === 'convert_one') {
+
+      return jsonResponse(
+        convertOneAPI(data)
+      );
+    }
+
+
+    /* --------------------------------------------------------
+       LARGE PNG CHUNK
+       -------------------------------------------------------- */
+
+    if (action === 'convert_chunk') {
+
+      return jsonResponse(
+        convertChunkAPI(data)
+      );
+    }
+
+
+    /* --------------------------------------------------------
+       MARK CONVERTED
+       -------------------------------------------------------- */
+
+    if (action === 'mark_converted') {
+
+      return jsonResponse(
+        markConvertedAPI(data)
+      );
+    }
+
+
+    /* --------------------------------------------------------
+       HISTORY
+       -------------------------------------------------------- */
+
+    if (action === 'get_history') {
+
+      return jsonResponse(
+        getHistoryAPI()
+      );
+    }
+
+
+    if (action === 'clear_history') {
+
+      return jsonResponse(
+        clearHistoryAPI()
+      );
+    }
+
+
+    return jsonResponse({
+
+      success: false,
+
+      error:
+        'Action tidak dikenali: ' + action
+    });
+
+
+  } catch (err) {
+
+    return jsonResponse({
+
+      success: false,
+
+      error:
+        err.message,
+
+      stack:
+        err.stack || ''
+    });
+  }
+}
+
+
+/* ============================================================
+   SCAN FOLDER
+   ============================================================ */
+
+function scanFolderAPI(data) {
+
+  try {
+
+    const folderId =
+      extractDriveId(
+        data.folderUrl || data.folderId
+      );
+
+    if (!folderId) {
+
+      throw new Error(
+        'Folder Google Drive tidak valid.'
+      );
+    }
+
+
+    const recursive =
+      String(data.recursive || 'false')
+        .toLowerCase() === 'true';
+
+
+    const files = [];
+
+    scanDriveFolder_(
+      folderId,
+      recursive,
+      files
     );
 
 
-  if (!response.ok) {
+    return {
 
-    throw new Error(
-      'HTTP ' +
-      response.status
+      success: true,
+
+      files: files,
+
+      total: files.length
+    };
+
+
+  } catch (err) {
+
+    return {
+
+      success: false,
+
+      error: err.message
+    };
+  }
+}
+
+
+/* ============================================================
+   RECURSIVE DRIVE SCAN
+   ============================================================ */
+
+function scanDriveFolder_(
+  folderId,
+  recursive,
+  result
+) {
+
+  const folder =
+    DriveApp.getFolderById(folderId);
+
+
+  const files =
+    folder.getFiles();
+
+
+  while (files.hasNext()) {
+
+    const file =
+      files.next();
+
+
+    const mime =
+      file.getMimeType();
+
+
+    if (
+      mime === MIME_GOOGLE_SLIDES
+    ) {
+
+      result.push({
+
+        id:
+          file.getId(),
+
+        name:
+          file.getName(),
+
+        mimeType:
+          mime,
+
+        size:
+          file.getSize(),
+
+        url:
+          file.getUrl(),
+
+        parents:
+          folder.getId()
+      });
+    }
+  }
+
+
+  if (!recursive) {
+    return;
+  }
+
+
+  const folders =
+    folder.getFolders();
+
+
+  while (folders.hasNext()) {
+
+    const child =
+      folders.next();
+
+
+    scanDriveFolder_(
+      child.getId(),
+      true,
+      result
     );
+  }
+}
+
+
+/* ============================================================
+   EXTRACT DRIVE ID
+   ============================================================ */
+
+function extractDriveId(value) {
+
+  if (!value) {
+    return '';
   }
 
 
   const text =
-    await response.text();
+    String(value).trim();
 
+
+  /*
+     URL:
+     /folders/ID
+  */
+
+  let match =
+    text.match(
+      /\/folders\/([a-zA-Z0-9_-]+)/
+    );
+
+
+  if (match) {
+    return match[1];
+  }
+
+
+  /*
+     Google Slides:
+     /d/ID/
+  */
+
+  match =
+    text.match(
+      /\/d\/([a-zA-Z0-9_-]+)/
+    );
+
+
+  if (match) {
+    return match[1];
+  }
+
+
+  /*
+     ID langsung
+  */
+
+  if (
+    /^[a-zA-Z0-9_-]{10,}$/.test(text)
+  ) {
+
+    return text;
+  }
+
+
+  return '';
+}
+
+
+/* ============================================================
+   SLIDE INFO
+   ============================================================ */
+
+function slideInfoAPI(data) {
 
   try {
 
-    return JSON.parse(text);
+    const presentationId =
+      String(
+        data.presentationId ||
+        data.fileId ||
+        ''
+      ).trim();
+
+
+    if (!presentationId) {
+
+      throw new Error(
+        'presentationId tidak ditemukan.'
+      );
+    }
+
+
+    const presentation =
+      Slides.Presentations.get(
+        presentationId
+      );
+
+
+    const slides =
+      presentation.slides || [];
+
+
+    const pageIds =
+      slides.map(function(slide) {
+
+        return slide.objectId;
+
+      });
+
+
+    return {
+
+      success: true,
+
+      presentationId:
+        presentationId,
+
+      name:
+        presentation.title || '',
+
+      totalSlides:
+        pageIds.length,
+
+      pageIds:
+        pageIds
+    };
+
 
   } catch (err) {
 
-    throw new Error(
-      'Response API bukan JSON.'
-    );
+    return {
+
+      success: false,
+
+      error: err.message
+    };
   }
 }
 
 
-/* ==========================================================
-   API GET
-   ========================================================== */
+/* ============================================================
+   NORMAL GOOGLE EXPORT
+   ============================================================ */
 
-async function apiGet(action) {
-
-  const url =
-    API_URL +
-    '?action=' +
-    encodeURIComponent(
-      action
-    );
-
-
-  const response =
-    await fetch(url);
-
-
-  if (!response.ok) {
-
-    throw new Error(
-      'HTTP ' +
-      response.status
-    );
-  }
-
-
-  return response.json();
-}
-
-
-/* ==========================================================
-   HISTORY
-   ========================================================== */
-
-async function loadHistory() {
+function convertOneAPI(data) {
 
   try {
 
-    const result =
-      await apiGet(
-        'history'
+    const presentationId =
+      String(
+        data.presentationId ||
+        data.fileId ||
+        ''
+      ).trim();
+
+
+    if (!presentationId) {
+
+      throw new Error(
+        'presentationId tidak ditemukan.'
       );
+    }
+
+
+    /*
+       Google Slides export PDF.
+    */
+
+    const url =
+      'https://docs.google.com/presentation/d/' +
+      presentationId +
+      '/export/pdf';
+
+
+    const response =
+      UrlFetchApp.fetch(
+        url,
+        {
+          muteHttpExceptions: true,
+          followRedirects: true
+        }
+      );
+
+
+    const code =
+      response.getResponseCode();
+
+
+    if (code >= 200 && code < 300) {
+
+      const blob =
+        response.getBlob()
+          .setName(
+            sanitizeFileName_(
+              data.fileName ||
+              'presentation'
+            ) + '.pdf'
+          );
+
+
+      const bytes =
+        blob.getBytes();
+
+
+      return {
+
+        success: true,
+
+        tooLarge: false,
+
+        fileName:
+          blob.getName(),
+
+        mimeType:
+          MIME_PDF,
+
+        size:
+          bytes.length,
+
+        base64:
+          Utilities.base64Encode(
+            bytes
+          )
+      };
+    }
+
+
+    /*
+       Google memberikan export limit.
+    */
+
+    const body =
+      response.getContentText();
 
 
     if (
-      result.success &&
-      Array.isArray(
-        result.history
-      )
+      body.indexOf(
+        'exportSizeLimitExceeded'
+      ) !== -1 ||
+
+      body.indexOf(
+        'file is too large'
+      ) !== -1 ||
+
+      body.indexOf(
+        'too large'
+      ) !== -1
     ) {
 
-      historyIds =
-        new Set(
-          result.history.map(
-            function(item) {
-              return item.id;
-            }
-          )
-        );
+      return {
 
+        success: true,
+
+        tooLarge: true,
+
+        message:
+          'File terlalu besar untuk Google Export. Gunakan HIGH QUALITY PNG.'
+      };
     }
+
+
+    return {
+
+      success: false,
+
+      error:
+        'Google Export gagal. HTTP ' +
+        code
+    };
 
 
   } catch (err) {
 
-    log(
-      'History belum dapat dimuat: ' +
-      err.message
-    );
+    /*
+       Jangan langsung gagal.
+
+       File besar akan dialihkan
+       ke HIGH QUALITY PNG.
+    */
+
+    const msg =
+      String(err.message || err);
+
+
+    if (
+      msg.indexOf(
+        'too large'
+      ) !== -1 ||
+
+      msg.indexOf(
+        'exportSizeLimitExceeded'
+      ) !== -1
+    ) {
+
+      return {
+
+        success: true,
+
+        tooLarge: true,
+
+        message:
+          'File besar → HIGH QUALITY PNG.'
+      };
+    }
+
+
+    return {
+
+      success: false,
+
+      error:
+        msg
+    };
   }
 }
 
 
-/* ==========================================================
-   SCAN
-   ========================================================== */
+/* ============================================================
+   CONVERT CHUNK
+   ============================================================ */
 
-async function scanFolder() {
-
-  if (converting) {
-    return;
-  }
-
-
-  const folderUrl =
-    document
-      .getElementById(
-        'folderUrl'
-      )
-      .value
-      .trim();
-
-
-  if (!folderUrl) {
-
-    alert(
-      'Masukkan URL folder Google Drive.'
-    );
-
-    return;
-  }
-
-
-  const recursive =
-    document
-      .getElementById(
-        'recursive'
-      )
-      .checked;
-
-
-  setButtons(true);
-
-
-  setProgress(
-    0,
-    'Memulai scan folder.'
-  );
-
-
-  log(
-    'Memulai scan folder.'
-  );
-
+function convertChunkAPI(data) {
 
   try {
 
-    const result =
-      await apiPost({
-
-        action:
-          'scan_folder',
-
-        folderUrl:
-          folderUrl,
-
-        recursive:
-          recursive
-
-      });
+    const presentationId =
+      String(
+        data.presentationId ||
+        data.fileId ||
+        ''
+      ).trim();
 
 
-    if (!result.success) {
+    if (!presentationId) {
 
       throw new Error(
-        result.error ||
-        'Scan gagal.'
+        'presentationId tidak ditemukan.'
       );
     }
 
 
-    files =
-      Array.isArray(
-        result.files
-      )
-        ? result.files
-        : [];
+    let pageIds =
+      data.pageIds || [];
 
 
-    renderTable();
+    /*
+       Jika dikirim sebagai JSON string.
+    */
 
-
-    updateSummary();
-
-
-    setProgress(
-      100,
-      'Scan selesai.'
-    );
-
-
-    log(
-      'Scan selesai: ' +
-      files.length +
-      ' Google Slides ditemukan.'
-    );
-
-
-  } catch (err) {
-
-    log(
-      'SCAN GAGAL: ' +
-      err.message
-    );
-
-
-    setProgress(
-      0,
-      'Scan gagal.'
-    );
-
-
-    alert(
-      'Scan gagal:\n' +
-      err.message
-    );
-
-  } finally {
-
-    setButtons(false);
-
-  }
-}
-
-
-/* ==========================================================
-   RENDER TABLE
-   ========================================================== */
-
-function renderTable() {
-
-  const tbody =
-    document.getElementById(
-      'fileTableBody'
-    );
-
-
-  if (!files.length) {
-
-    tbody.innerHTML =
-      '<tr>' +
-      '<td colspan="4" style="text-align:center;">' +
-      'Tidak ada Google Slides.' +
-      '</td>' +
-      '</tr>';
-
-    return;
-  }
-
-
-  tbody.innerHTML =
-    files.map(
-      function(file, index) {
-
-        const converted =
-          historyIds.has(
-            file.id
-          );
-
-
-        return (
-
-          '<tr>' +
-
-          '<td>' +
-
-          '<input ' +
-          'type="checkbox" ' +
-          'class="file-check" ' +
-          'data-index="' +
-          index +
-          '"' +
-          ' onchange="updateSummary()">' +
-
-          '</td>' +
-
-          '<td>' +
-          (index + 1) +
-          '</td>' +
-
-          '<td>' +
-          escapeHtml(
-            file.name
-          ) +
-          '</td>' +
-
-          '<td>' +
-
-          (
-            converted
-
-              ? '<span class="badge badge-success">SUDAH</span>'
-
-              : '<span class="badge badge-wait">BELUM</span>'
-          ) +
-
-          '</td>' +
-
-          '</tr>'
-
-        );
-
-      }
-    ).join('');
-
-}
-
-
-/* ==========================================================
-   SELECT ALL
-   ========================================================== */
-
-function selectAll() {
-
-  const checks =
-    document.querySelectorAll(
-      '.file-check'
-    );
-
-
-  checks.forEach(
-    function(check) {
-      check.checked = true;
-    }
-  );
-
-
-  document.getElementById(
-    'checkAll'
-  ).checked = true;
-
-
-  updateSummary();
-}
-
-
-/* ==========================================================
-   DESELECT ALL
-   ========================================================== */
-
-function deselectAll() {
-
-  const checks =
-    document.querySelectorAll(
-      '.file-check'
-    );
-
-
-  checks.forEach(
-    function(check) {
-      check.checked = false;
-    }
-  );
-
-
-  document.getElementById(
-    'checkAll'
-  ).checked = false;
-
-
-  updateSummary();
-}
-
-
-/* ==========================================================
-   TOGGLE ALL
-   ========================================================== */
-
-function toggleAll(value) {
-
-  const checks =
-    document.querySelectorAll(
-      '.file-check'
-    );
-
-
-  checks.forEach(
-    function(check) {
-      check.checked = value;
-    }
-  );
-
-
-  updateSummary();
-}
-
-
-/* ==========================================================
-   UPDATE SUMMARY
-   ========================================================== */
-
-function updateSummary() {
-
-  const selected =
-    getSelectedFiles();
-
-
-  document.getElementById(
-    'countFound'
-  ).textContent =
-    files.length;
-
-
-  document.getElementById(
-    'countSelected'
-  ).textContent =
-    selected.length;
-}
-
-
-/* ==========================================================
-   GET SELECTED
-   ========================================================== */
-
-function getSelectedFiles() {
-
-  const checks =
-    document.querySelectorAll(
-      '.file-check:checked'
-    );
-
-
-  return Array.from(
-    checks
-  ).map(
-    function(check) {
-
-      const index =
-        Number(
-          check.dataset.index
-        );
-
-
-      return files[index];
-
-    }
-  );
-}
-
-
-/* ==========================================================
-   CONVERT SELECTED
-   ========================================================== */
-
-async function convertSelected() {
-
-  const selected =
-    getSelectedFiles();
-
-
-  if (!selected.length) {
-
-    alert(
-      'Pilih minimal 1 Google Slides.'
-    );
-
-    return;
-  }
-
-
-  await startConversion(
-    selected
-  );
-}
-
-
-/* ==========================================================
-   CONVERT ALL
-   ========================================================== */
-
-async function convertAll() {
-
-  if (!files.length) {
-
-    alert(
-      'Belum ada hasil scan.'
-    );
-
-    return;
-  }
-
-
-  await startConversion(
-    files.slice()
-  );
-}
-
-
-/* ==========================================================
-   START CONVERSION
-   ========================================================== */
-
-async function startConversion(
-  selectedFiles
-) {
-
-  if (converting) {
-    return;
-  }
-
-
-  converting = true;
-
-  setButtons(true);
-
-
-  let successCount = 0;
-
-  let failedCount = 0;
-
-  let skipCount = 0;
-
-
-  log(
-    '================================'
-  );
-
-
-  log(
-    'Conversion dimulai. Total: ' +
-    selectedFiles.length +
-    ' file.'
-  );
-
-
-  try {
-
-    const generated = [];
-
-
-    for (
-      let i = 0;
-      i < selectedFiles.length;
-      i++
-    ) {
-
-      const file =
-        selectedFiles[i];
-
-
-      log(
-        'Memproses ' +
-        (i + 1) +
-        '/' +
-        selectedFiles.length +
-        ': ' +
-        file.name
-      );
-
-
-      /*
-       * HISTORY
-       */
-
-      const force =
-        document
-          .getElementById(
-            'forceConvert'
-          )
-          .checked;
-
-
-      if (
-        historyIds.has(file.id) &&
-        !force
-      ) {
-
-        log(
-          'SKIP: ' +
-          file.name +
-          ' → sudah ada di history.'
-        );
-
-
-        skipCount++;
-
-        continue;
-      }
-
+    if (typeof pageIds === 'string') {
 
       try {
 
-        setProgress(
-          Math.round(
-            (i /
-              selectedFiles.length) *
-            100
-          ),
-          'Memproses file ' +
-          (i + 1) +
-          '/' +
-          selectedFiles.length
-        );
-
-
-        const pdfBytes =
-          await convertOneSmart(
-            file,
-            force
-          );
-
-
-        if (
-          !pdfBytes ||
-          !pdfBytes.length
-        ) {
-
-          throw new Error(
-            'PDF kosong.'
-          );
-        }
-
-
-        generated.push({
-
-          file:
-            file,
-
-          bytes:
-            pdfBytes
-
-        });
-
-
-        successCount++;
-
-
-        document.getElementById(
-          'countSuccess'
-        ).textContent =
-          successCount;
-
-
-        log(
-          'BERHASIL: ' +
-          file.name
-        );
-
+        pageIds =
+          JSON.parse(pageIds);
 
       } catch (err) {
 
-        failedCount++;
-
-
-        document.getElementById(
-          'countFailed'
-        ).textContent =
-          failedCount;
-
-
-        log(
-          'GAGAL: ' +
-          file.name +
-          ' → ' +
-          err.message
-        );
-
+        pageIds = [];
       }
-
     }
 
 
-    /*
-     * DOWNLOAD
-     */
-
-    if (generated.length === 1) {
-
-      setProgress(
-        100,
-        'Menyiapkan download PDF.'
-      );
-
-
-      downloadPDF(
-        generated[0].bytes,
-        makePDFName(
-          generated[0].file.name
-        )
-      );
-
-
-    } else if (
-      generated.length > 1
+    if (
+      !Array.isArray(pageIds) ||
+      pageIds.length === 0
     ) {
 
-      setProgress(
-        100,
-        'Membuat ZIP.'
-      );
-
-
-      await downloadZIP(
-        generated
-      );
-
-    }
-
-
-    /*
-     * MARK HISTORY
-     *
-     * HANYA FILE YANG BENAR-BENAR
-     * BERHASIL DIBUAT PDF.
-     */
-
-    if (generated.length) {
-
-      const historyItems =
-        generated.map(
-          function(item) {
-
-            return {
-
-              id:
-                item.file.id,
-
-              name:
-                item.file.name
-
-            };
-
-          }
-        );
-
-
-      try {
-
-        await apiPost({
-
-          action:
-            'mark_converted',
-
-          items:
-            historyItems
-
-        });
-
-
-        historyItems.forEach(
-          function(item) {
-
-            historyIds.add(
-              item.id
-            );
-
-          }
-        );
-
-
-      } catch (err) {
-
-        log(
-          'Peringatan: history gagal disimpan → ' +
-          err.message
-        );
-      }
-    }
-
-
-  } finally {
-
-    converting = false;
-
-    setButtons(false);
-
-
-    renderTable();
-
-    updateSummary();
-
-
-    log(
-      '================================'
-    );
-
-
-    log(
-      'PROSES SELESAI → Berhasil: ' +
-      successCount +
-      ', Skip: ' +
-      skipCount +
-      ', Gagal: ' +
-      failedCount
-    );
-
-
-    setProgress(
-      100,
-      'Proses selesai.'
-    );
-
-  }
-}
-
-
-/* ==========================================================
-   SMART CONVERSION
-   ========================================================== */
-
-async function convertOneSmart(
-  file,
-  force
-) {
-
-  /*
-   * FORCE:
-   * langsung large engine.
-   */
-
-  if (force) {
-
-    log(
-      'Force Convert aktif → FAST SINGLE PDF.'
-    );
-
-
-    return await convertLargeAsOnePDF(
-      file
-    );
-  }
-
-
-  /*
-   * NORMAL:
-   * coba Google Export dulu.
-   */
-
-  let result;
-
-
-  try {
-
-    result =
-      await apiPost({
-
-        action:
-          'convert_one',
-
-        fileId:
-          file.id,
-
-        fileName:
-          file.name,
-
-        forceConvert:
-          false
-
-      });
-
-
-  } catch (err) {
-
-    /*
-     * Kalau request normal gagal,
-     * coba engine besar.
-     */
-
-    log(
-      'Export normal gagal → mencoba FAST SINGLE PDF.'
-    );
-
-
-    return await convertLargeAsOnePDF(
-      file
-    );
-  }
-
-
-  if (
-    result.success &&
-    !result.tooLarge &&
-    result.base64
-  ) {
-
-    log(
-      'Engine: GOOGLE EXPORT PDF.'
-    );
-
-
-    return base64ToUint8Array(
-      result.base64
-    );
-  }
-
-
-  if (
-    result.success &&
-    result.tooLarge
-  ) {
-
-    log(
-      'Google Export menolak file besar → FAST SINGLE PDF.'
-    );
-
-
-    return await convertLargeAsOnePDF(
-      file
-    );
-  }
-
-
-  throw new Error(
-    result.error ||
-    'Conversion gagal.'
-  );
-}
-
-
-/* ==========================================================
-   LARGE FILE
-   ========================================================== */
-
-async function convertLargeAsOnePDF(
-  file
-) {
-
-  log(
-    'Membaca struktur Google Slides...'
-  );
-
-
-  /*
-   * PENTING:
-   *
-   * slideInfo hanya dipanggil SEKALI.
-   */
-
-  const info =
-    await apiPost({
-
-      action:
-        'slide_info',
-
-      fileId:
-        file.id
-
-    });
-
-
-  if (!info.success) {
-
-    throw new Error(
-      info.error ||
-      'Gagal membaca slide.'
-    );
-  }
-
-
-  const pageIds =
-    Array.isArray(
-      info.pageIds
-    )
-      ? info.pageIds
-      : [];
-
-
-  const totalSlides =
-    pageIds.length;
-
-
-  if (!totalSlides) {
-
-    throw new Error(
-      'Google Slides tidak memiliki slide.'
-    );
-  }
-
-
-  log(
-    'Total slide: ' +
-    totalSlides
-  );
-
-
-  log(
-    'Engine: FAST SINGLE PDF.'
-  );
-
-
-  log(
-    'Thumbnail: SMALL.'
-  );
-
-
-  log(
-    'Batch internal: ' +
-    CHUNK_SIZE +
-    ' slide.'
-  );
-
-
-  /*
-   * BUAT SATU PDF SAJA.
-   *
-   * Semua thumbnail langsung masuk
-   * ke PDF yang sama.
-   */
-
-  const pdfDoc =
-    await PDFLib.PDFDocument.create();
-
-
-  /*
-   * PROSES CHUNK
-   */
-
-  for (
-    let start = 0;
-    start < totalSlides;
-    start += CHUNK_SIZE
-  ) {
-
-    const end =
-      Math.min(
-        start + CHUNK_SIZE,
-        totalSlides
-      );
-
-
-    const chunkPageIds =
-      pageIds.slice(
-        start,
-        end
-      );
-
-
-    log(
-      'Mengambil thumbnail slide ' +
-      (start + 1) +
-      '–' +
-      end +
-      ' dari ' +
-      totalSlides
-    );
-
-
-    const result =
-      await apiPost({
-
-        action:
-          'convert_chunk',
-
-        fileId:
-          file.id,
-
-        pageIds:
-          chunkPageIds,
-
-        start:
-          start,
-
-        end:
-          end
-
-      });
-
-
-    if (!result.success) {
-
       throw new Error(
-        result.error ||
-        'Chunk gagal.'
+        'pageIds kosong.'
       );
     }
 
+
+    /*
+       HANYA mengambil thumbnail.
+
+       Tidak membuat PDF di server.
+
+       PDF final dibuat oleh browser.
+    */
 
     const images =
-      Array.isArray(
-        result.images
-      )
-        ? result.images
-        : [];
-
-
-    if (!images.length) {
-
-      throw new Error(
-        'Chunk tidak menghasilkan thumbnail.'
-      );
-    }
-
-
-    /*
-     * MASUKKAN LANGSUNG KE PDF FINAL.
-     */
-
-    for (
-      let j = 0;
-      j < images.length;
-      j++
-    ) {
-
-      const imageData =
-        images[j];
-
-
-      const pngBytes =
-        base64ToUint8Array(
-          imageData.base64
-        );
-
-
-      const png =
-        await pdfDoc.embedPng(
-          pngBytes
-        );
-
-
-      /*
-       * Ukuran PDF mengikuti
-       * rasio thumbnail.
-       *
-       * Lebar dasar 720 point.
-       */
-
-      const maxWidth =
-        720;
-
-
-      const width =
-        maxWidth;
-
-
-      const height =
-        width *
-        (
-          png.height /
-          png.width
-        );
-
-
-      const page =
-        pdfDoc.addPage(
-          [
-            width,
-            height
-          ]
-        );
-
-
-      page.drawImage(
-        png,
-        {
-          x: 0,
-          y: 0,
-
-          width:
-            width,
-
-          height:
-            height
-        }
-      );
-
-    }
-
-
-    /*
-     * Progress keseluruhan slide.
-     */
-
-    const percent =
-      Math.round(
-        (end / totalSlides) *
-        95
+      getSlideThumbnailPNGBatch_(
+        presentationId,
+        pageIds
       );
 
 
-    setProgress(
-      percent,
-      'Memproses slide ' +
-      end +
-      '/' +
-      totalSlides
-    );
+    return {
 
+      success: true,
 
-    log(
-      'Slide ' +
-      end +
-      '/' +
-      totalSlides +
-      ' masuk ke PDF final.'
-    );
-  }
+      presentationId:
+        presentationId,
 
+      count:
+        images.length,
 
-  /*
-   * SIMPAN PDF SEKALI.
-   */
+      thumbnailSize:
+        FALLBACK_THUMBNAIL_SIZE,
 
-  setProgress(
-    98,
-    'Menyusun PDF final.'
-  );
+      format:
+        'PNG',
 
-
-  log(
-    'Menyusun SATU PDF FINAL...'
-  );
-
-
-  const finalBytes =
-    await pdfDoc.save({
-
-      useObjectStreams:
-        true
-
-    });
-
-
-  setProgress(
-    100,
-    'PDF final selesai.'
-  );
-
-
-  log(
-    'PDF final selesai: ' +
-    totalSlides +
-    ' halaman.'
-  );
-
-
-  return finalBytes;
-}
-
-
-/* ==========================================================
-   BASE64 → UINT8ARRAY
-   ========================================================== */
-
-function base64ToUint8Array(
-  base64
-) {
-
-  const binary =
-    atob(base64);
-
-
-  const bytes =
-    new Uint8Array(
-      binary.length
-    );
-
-
-  for (
-    let i = 0;
-    i < binary.length;
-    i++
-  ) {
-
-    bytes[i] =
-      binary.charCodeAt(i);
-  }
-
-
-  return bytes;
-}
-
-
-/* ==========================================================
-   DOWNLOAD PDF
-   ========================================================== */
-
-function downloadPDF(
-  bytes,
-  filename
-) {
-
-  const blob =
-    new Blob(
-      [bytes],
-      {
-        type:
-          'application/pdf'
-      }
-    );
-
-
-  const url =
-    URL.createObjectURL(
-      blob
-    );
-
-
-  const a =
-    document.createElement(
-      'a'
-    );
-
-
-  a.href =
-    url;
-
-  a.download =
-    filename;
-
-
-  document.body.appendChild(
-    a
-  );
-
-
-  a.click();
-
-
-  a.remove();
-
-
-  setTimeout(
-    function() {
-
-      URL.revokeObjectURL(
-        url
-      );
-
-    },
-    3000
-  );
-
-
-  log(
-    'Download PDF: ' +
-    filename
-  );
-}
-
-
-/* ==========================================================
-   MAKE PDF NAME
-   ========================================================== */
-
-function makePDFName(
-  name
-) {
-
-  let clean =
-    String(name || 'converted')
-      .replace(
-        /\.pptx?$/i,
-        ''
-      )
-      .trim();
-
-
-  if (!clean) {
-
-    clean =
-      'converted';
-  }
-
-
-  return (
-    clean +
-    '.pdf'
-  );
-}
-
-
-/* ==========================================================
-   ZIP
-   ========================================================== */
-
-async function downloadZIP(
-  generated
-) {
-
-  const zip =
-    new JSZip();
-
-
-  for (
-    let i = 0;
-    i < generated.length;
-    i++
-  ) {
-
-    const item =
-      generated[i];
-
-
-    zip.file(
-      makePDFName(
-        item.file.name
-      ),
-      item.bytes
-    );
-  }
-
-
-  log(
-    'Membuat ZIP dari ' +
-    generated.length +
-    ' PDF...'
-  );
-
-
-  const blob =
-    await zip.generateAsync({
-
-      type:
-        'blob',
-
-      compression:
-        'STORE'
-
-    });
-
-
-  const url =
-    URL.createObjectURL(
-      blob
-    );
-
-
-  const a =
-    document.createElement(
-      'a'
-    );
-
-
-  a.href =
-    url;
-
-
-  a.download =
-    'SLIDE_TO_PDF_' +
-    dateFileName() +
-    '.zip';
-
-
-  document.body.appendChild(
-    a
-  );
-
-
-  a.click();
-
-
-  a.remove();
-
-
-  setTimeout(
-    function() {
-
-      URL.revokeObjectURL(
-        url
-      );
-
-    },
-    5000
-  );
-
-
-  log(
-    'ZIP berhasil dibuat.'
-  );
-}
-
-
-/* ==========================================================
-   DATE FILE NAME
-   ========================================================== */
-
-function dateFileName() {
-
-  const d =
-    new Date();
-
-
-  const yyyy =
-    d.getFullYear();
-
-
-  const mm =
-    String(
-      d.getMonth() + 1
-    ).padStart(
-      2,
-      '0'
-    );
-
-
-  const dd =
-    String(
-      d.getDate()
-    ).padStart(
-      2,
-      '0'
-    );
-
-
-  const hh =
-    String(
-      d.getHours()
-    ).padStart(
-      2,
-      '0'
-    );
-
-
-  const mi =
-    String(
-      d.getMinutes()
-    ).padStart(
-      2,
-      '0'
-    );
-
-
-  const ss =
-    String(
-      d.getSeconds()
-    ).padStart(
-      2,
-      '0'
-    );
-
-
-  return (
-    yyyy +
-    mm +
-    dd +
-    '_' +
-    hh +
-    mi +
-    ss
-  );
-}
-
-
-/* ==========================================================
-   CLEAR HISTORY
-   ========================================================== */
-
-async function clearHistory() {
-
-  if (
-    !confirm(
-      'Yakin ingin menghapus history conversion?'
-    )
-  ) {
-
-    return;
-  }
-
-
-  try {
-
-    const result =
-      await apiPost({
-
-        action:
-          'clear_history'
-
-      });
-
-
-    if (!result.success) {
-
-      throw new Error(
-        result.error ||
-        'Gagal menghapus history.'
-      );
-    }
-
-
-    historyIds =
-      new Set();
-
-
-    renderTable();
-
-
-    log(
-      'History berhasil dihapus.'
-    );
+      images:
+        images
+    };
 
 
   } catch (err) {
 
-    alert(
-      'Gagal menghapus history:\n' +
-      err.message
-    );
+    return {
 
+      success: false,
+
+      error:
+        err.message
+    };
   }
 }
 
 
-/* ==========================================================
-   PROGRESS
-   ========================================================== */
+/* ============================================================
+   GET LARGE PNG THUMBNAILS
+   ============================================================ */
 
-function setProgress(
-  percent,
-  label
+function getSlideThumbnailPNGBatch_(
+  presentationId,
+  pageIds
 ) {
 
-  const p =
-    Math.max(
-      0,
-      Math.min(
-        100,
-        Number(percent) || 0
-      )
+  const result = [];
+
+
+  pageIds.forEach(function(pageId) {
+
+    try {
+
+      /*
+         Slides API thumbnail.
+
+         LARGE = kualitas tinggi.
+      */
+
+      const thumbnail =
+        Slides.Presentations.Pages
+          .getThumbnail(
+            presentationId,
+            pageId,
+            {
+              'thumbnailProperties.thumbnailSize':
+                FALLBACK_THUMBNAIL_SIZE,
+
+              'thumbnailProperties.mimeType':
+                MIME_PNG
+            }
+          );
+
+
+      const contentUrl =
+        thumbnail.contentUrl;
+
+
+      if (!contentUrl) {
+
+        throw new Error(
+          'contentUrl thumbnail kosong untuk slide ' +
+          pageId
+        );
+      }
+
+
+      /*
+         Download PNG asli.
+      */
+
+      const response =
+        UrlFetchApp.fetch(
+          contentUrl,
+          {
+            muteHttpExceptions: true
+          }
+        );
+
+
+      const code =
+        response.getResponseCode();
+
+
+      if (code < 200 || code >= 300) {
+
+        throw new Error(
+          'Gagal mengambil PNG slide ' +
+          pageId +
+          '. HTTP ' +
+          code
+        );
+      }
+
+
+      const blob =
+        response.getBlob();
+
+
+      const bytes =
+        blob.getBytes();
+
+
+      /*
+         Kirim ukuran gambar ke browser
+         bila tersedia.
+
+         Kita tidak mengubah gambar.
+      */
+
+      result.push({
+
+        pageId:
+          pageId,
+
+        mimeType:
+          MIME_PNG,
+
+        size:
+          bytes.length,
+
+        base64:
+          Utilities.base64Encode(
+            bytes
+          )
+      });
+
+
+    } catch (err) {
+
+      result.push({
+
+        pageId:
+          pageId,
+
+        error:
+          err.message
+      });
+    }
+  });
+
+
+  return result;
+}
+
+
+/* ============================================================
+   MARK CONVERTED
+   ============================================================ */
+
+function markConvertedAPI(data) {
+
+  try {
+
+    const id =
+      String(
+        data.presentationId ||
+        data.fileId ||
+        ''
+      ).trim();
+
+
+    if (!id) {
+
+      throw new Error(
+        'presentationId tidak ditemukan.'
+      );
+    }
+
+
+    const name =
+      String(
+        data.fileName ||
+        data.name ||
+        id
+      );
+
+
+    const props =
+      PropertiesService
+        .getScriptProperties();
+
+
+    let history =
+      props.getProperty(
+        CACHE_SKIP_KEY
+      );
+
+
+    let list = [];
+
+
+    if (history) {
+
+      try {
+
+        list =
+          JSON.parse(history);
+
+      } catch (err) {
+
+        list = [];
+      }
+    }
+
+
+    /*
+       Hapus ID lama jika ada.
+    */
+
+    list =
+      list.filter(function(item) {
+
+        return item.id !== id;
+      });
+
+
+    /*
+       Masukkan paling baru
+       ke bagian depan.
+    */
+
+    list.unshift({
+
+      id:
+        id,
+
+      name:
+        name,
+
+      convertedAt:
+        new Date().toISOString()
+    });
+
+
+    /*
+       Batasi history.
+    */
+
+    if (
+      list.length >
+      MAX_HISTORY
+    ) {
+
+      list =
+        list.slice(
+          0,
+          MAX_HISTORY
+        );
+    }
+
+
+    props.setProperty(
+      CACHE_SKIP_KEY,
+      JSON.stringify(list)
     );
 
 
-  document.getElementById(
-    'progressFill'
-  ).style.width =
-    p + '%';
+    return {
+
+      success: true,
+
+      id:
+        id,
+
+      message:
+        'File ditandai sudah dikonversi.'
+    };
 
 
-  document.getElementById(
-    'progressPercent'
-  ).textContent =
-    Math.round(p) + '%';
+  } catch (err) {
 
+    return {
 
-  document.getElementById(
-    'progressLabel'
-  ).textContent =
-    label || '';
+      success: false,
+
+      error:
+        err.message
+    };
+  }
 }
 
 
-/* ==========================================================
-   BUTTON LOCK
-   ========================================================== */
+/* ============================================================
+   HISTORY
+   ============================================================ */
 
-function setButtons(
-  locked
-) {
+function getHistoryAPI() {
 
-  document.getElementById(
-    'btnScan'
-  ).disabled =
-    locked;
+  try {
 
-
-  document.getElementById(
-    'btnConvertSelected'
-  ).disabled =
-    locked ||
-    files.length === 0;
+    const props =
+      PropertiesService
+        .getScriptProperties();
 
 
-  document.getElementById(
-    'btnConvertAll'
-  ).disabled =
-    locked ||
-    files.length === 0;
+    const history =
+      props.getProperty(
+        CACHE_SKIP_KEY
+      );
+
+
+    let list = [];
+
+
+    if (history) {
+
+      try {
+
+        list =
+          JSON.parse(history);
+
+      } catch (err) {
+
+        list = [];
+      }
+    }
+
+
+    return {
+
+      success: true,
+
+      history:
+        list
+    };
+
+
+  } catch (err) {
+
+    return {
+
+      success: false,
+
+      error:
+        err.message
+    };
+  }
 }
 
-</script>
+
+/* ============================================================
+   CLEAR HISTORY
+   ============================================================ */
+
+function clearHistoryAPI() {
+
+  try {
+
+    PropertiesService
+      .getScriptProperties()
+      .deleteProperty(
+        CACHE_SKIP_KEY
+      );
 
 
-</body>
+    return {
 
-</html>
+      success: true,
+
+      message:
+        'History conversion berhasil dihapus.'
+    };
+
+
+  } catch (err) {
+
+    return {
+
+      success: false,
+
+      error:
+        err.message
+    };
+  }
+}
+
+
+/* ============================================================
+   SANITIZE FILE NAME
+   ============================================================ */
+
+function sanitizeFileName_(name) {
+
+  return String(name || 'file')
+    .replace(/[\\\/:*?"<>|#%{}]/g, '_')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .substring(0, 180);
+}
+
+
+/* ============================================================
+   TEST FUNCTION
+   ============================================================ */
+
+function TEST_PING() {
+
+  Logger.log(
+    JSON.stringify({
+
+      success: true,
+
+      app:
+        APP_NAME,
+
+      engine:
+        'HIGH QUALITY LARGE PNG → PDF',
+
+      thumbnail:
+        FALLBACK_THUMBNAIL_SIZE,
+
+      format:
+        'PNG',
+
+      chunkSize:
+        LARGE_PNG_CHUNK_SIZE,
+
+      timestamp:
+        new Date().toISOString()
+    })
+  );
+}
