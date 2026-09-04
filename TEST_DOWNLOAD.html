@@ -8,7 +8,24 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>Google Slides → PDF Converter</title>
+<title>Slide To PDF Converter</title>
+
+
+<!-- =========================================================
+     JSZIP
+     ========================================================= -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+
+<!-- =========================================================
+     PDF-LIB
+     Digunakan browser untuk menggabungkan
+     internal PDF menjadi SATU PDF FINAL.
+     ========================================================= -->
+
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
 
 <style>
 
@@ -17,349 +34,620 @@
 }
 
 body {
+
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #f4f7fb;
-  color: #1f2937;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  background:
+    #f4f7fb;
+
+  color:
+    #1f2937;
 }
+
 
 .container {
-  width: min(1100px, 94%);
-  margin: 30px auto;
+
+  width:
+    min(1200px, 94%);
+
+  margin:
+    30px auto;
 }
+
 
 .header {
-  background: linear-gradient(135deg, #1d4ed8, #2563eb);
-  color: white;
-  padding: 28px;
-  border-radius: 18px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.10);
-  margin-bottom: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #1e3a8a,
+      #2563eb
+    );
+
+  color:
+    white;
+
+  padding:
+    28px;
+
+  border-radius:
+    18px;
+
+  margin-bottom:
+    20px;
+
+  box-shadow:
+    0 10px 30px
+    rgba(0,0,0,.12);
 }
+
 
 .header h1 {
-  margin: 0 0 8px;
-  font-size: 28px;
+
+  margin:
+    0 0 8px;
+
+  font-size:
+    28px;
 }
+
 
 .header p {
-  margin: 0;
-  opacity: .9;
+
+  margin:
+    0;
+
+  opacity:
+    .9;
 }
+
 
 .card {
-  background: white;
-  border-radius: 16px;
-  padding: 22px;
-  margin-bottom: 18px;
-  box-shadow: 0 5px 20px rgba(0,0,0,.07);
+
+  background:
+    white;
+
+  border-radius:
+    16px;
+
+  padding:
+    20px;
+
+  margin-bottom:
+    20px;
+
+  box-shadow:
+    0 5px 20px
+    rgba(0,0,0,.06);
 }
 
-.card-title {
-  font-size: 19px;
-  font-weight: bold;
-  margin-bottom: 15px;
+
+label {
+
+  display:
+    block;
+
+  font-weight:
+    700;
+
+  margin-bottom:
+    8px;
 }
 
-.input-group {
-  display: flex;
-  gap: 10px;
-}
 
 input[type="text"] {
-  flex: 1;
-  min-width: 0;
-  padding: 13px 15px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  font-size: 14px;
-  outline: none;
+
+  width:
+    100%;
+
+  padding:
+    13px 15px;
+
+  border:
+    1px solid #d1d5db;
+
+  border-radius:
+    10px;
+
+  font-size:
+    15px;
+
+  outline:
+    none;
 }
+
 
 input[type="text"]:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+
+  border-color:
+    #2563eb;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(37,99,235,.12);
 }
 
-button {
-  border: none;
-  border-radius: 10px;
-  padding: 12px 17px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: .2s;
-}
-
-button:hover {
-  transform: translateY(-1px);
-}
-
-button:disabled {
-  opacity: .5;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.btn-primary {
-  background: #2563eb;
-  color: white;
-}
-
-.btn-success {
-  background: #16a34a;
-  color: white;
-}
-
-.btn-warning {
-  background: #f59e0b;
-  color: white;
-}
-
-.btn-danger {
-  background: #dc2626;
-  color: white;
-}
-
-.btn-secondary {
-  background: #e5e7eb;
-  color: #111827;
-}
 
 .options {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-top: 15px;
+
+  display:
+    flex;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    18px;
+
+  margin-top:
+    15px;
 }
 
-.option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
+
+.check {
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    8px;
+
+  font-weight:
+    600;
 }
 
-.option input {
-  width: 17px;
-  height: 17px;
+
+.buttons {
+
+  display:
+    flex;
+
+  flex-wrap:
+    wrap;
+
+  gap:
+    10px;
+
+  margin-top:
+    18px;
 }
+
+
+button {
+
+  border:
+    none;
+
+  border-radius:
+    10px;
+
+  padding:
+    12px 18px;
+
+  font-size:
+    14px;
+
+  font-weight:
+    700;
+
+  cursor:
+    pointer;
+
+  transition:
+    .2s;
+}
+
+
+button:hover {
+
+  transform:
+    translateY(-1px);
+}
+
+
+button:disabled {
+
+  opacity:
+    .5;
+
+  cursor:
+    not-allowed;
+
+  transform:
+    none;
+}
+
+
+.btn-primary {
+
+  background:
+    #2563eb;
+
+  color:
+    white;
+}
+
+
+.btn-success {
+
+  background:
+    #16a34a;
+
+  color:
+    white;
+}
+
+
+.btn-warning {
+
+  background:
+    #f59e0b;
+
+  color:
+    white;
+}
+
+
+.btn-danger {
+
+  background:
+    #dc2626;
+
+  color:
+    white;
+}
+
+
+.btn-secondary {
+
+  background:
+    #e5e7eb;
+
+  color:
+    #111827;
+}
+
 
 .summary {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 18px;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      1fr
+    );
+
+  gap:
+    12px;
+
+  margin-bottom:
+    20px;
 }
 
-.summary-box {
-  background: white;
-  padding: 18px;
-  border-radius: 14px;
-  box-shadow: 0 5px 18px rgba(0,0,0,.06);
+
+.summary-card {
+
+  background:
+    white;
+
+  border-radius:
+    14px;
+
+  padding:
+    18px;
+
+  box-shadow:
+    0 4px 15px
+    rgba(0,0,0,.05);
 }
 
-.summary-label {
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 7px;
+
+.summary-card .number {
+
+  font-size:
+    28px;
+
+  font-weight:
+    800;
+
+  margin-top:
+    5px;
 }
 
-.summary-value {
-  font-size: 25px;
-  font-weight: bold;
+
+.table-wrap {
+
+  overflow-x:
+    auto;
 }
 
-.table-wrapper {
-  overflow-x: auto;
-}
 
 table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 800px;
+
+  width:
+    100%;
+
+  border-collapse:
+    collapse;
+
+  min-width:
+    850px;
 }
+
+
+th,
+td {
+
+  padding:
+    11px 10px;
+
+  border-bottom:
+    1px solid #e5e7eb;
+
+  text-align:
+    left;
+
+  vertical-align:
+    middle;
+}
+
 
 th {
-  background: #f3f4f6;
-  text-align: left;
-  padding: 12px;
-  font-size: 13px;
-  border-bottom: 1px solid #e5e7eb;
+
+  background:
+    #f8fafc;
+
+  font-size:
+    13px;
 }
+
 
 td {
-  padding: 12px;
-  border-bottom: 1px solid #edf0f3;
-  font-size: 13px;
+
+  font-size:
+    13px;
 }
 
-tr:hover td {
-  background: #f9fafb;
-}
-
-.file-name {
-  font-weight: bold;
-}
-
-.file-path {
-  color: #6b7280;
-  font-size: 12px;
-  margin-top: 4px;
-}
-
-.badge {
-  display: inline-block;
-  padding: 5px 9px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: bold;
-}
-
-.badge-new {
-  background: #dbeafe;
-  color: #1d4ed8;
-}
-
-.badge-done {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.badge-error {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.toolbar {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 15px;
-}
-
-.progress-area {
-  display: none;
-}
-
-.progress-area.active {
-  display: block;
-}
-
-.progress-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 9px;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.progress-bar {
-  width: 100%;
-  height: 14px;
-  background: #e5e7eb;
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: #2563eb;
-  transition: width .3s ease;
-}
-
-.progress-percent {
-  text-align: center;
-  margin-top: 8px;
-  font-size: 20px;
-  font-weight: bold;
-}
 
 .status {
-  padding: 14px;
-  border-radius: 10px;
-  background: #f3f4f6;
-  font-size: 14px;
-  margin-top: 15px;
+
+  display:
+    inline-block;
+
+  padding:
+    5px 9px;
+
+  border-radius:
+    999px;
+
+  font-size:
+    11px;
+
+  font-weight:
+    800;
 }
 
-.status.success {
-  background: #dcfce7;
-  color: #166534;
+
+.status-ready {
+
+  background:
+    #dcfce7;
+
+  color:
+    #166534;
 }
 
-.status.error {
-  background: #fee2e2;
-  color: #991b1b;
+
+.status-done {
+
+  background:
+    #dbeafe;
+
+  color:
+    #1d4ed8;
 }
 
-.status.info {
-  background: #dbeafe;
-  color: #1e40af;
+
+.status-new {
+
+  background:
+    #fef3c7;
+
+  color:
+    #92400e;
 }
+
+
+.progress-box {
+
+  margin-top:
+    15px;
+}
+
+
+.progress-header {
+
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  margin-bottom:
+    8px;
+
+  font-weight:
+    700;
+}
+
+
+.progress-track {
+
+  width:
+    100%;
+
+  height:
+    16px;
+
+  background:
+    #e5e7eb;
+
+  border-radius:
+    999px;
+
+  overflow:
+    hidden;
+}
+
+
+.progress-bar {
+
+  width:
+    0%;
+
+  height:
+    100%;
+
+  background:
+    #2563eb;
+
+  transition:
+    width .25s ease;
+}
+
+
+.progress-note {
+
+  margin-top:
+    9px;
+
+  color:
+    #6b7280;
+
+  font-size:
+    13px;
+}
+
 
 .log {
-  max-height: 300px;
-  overflow-y: auto;
-  background: #111827;
-  color: #d1d5db;
-  border-radius: 10px;
-  padding: 14px;
-  font-family: Consolas, monospace;
-  font-size: 12px;
-  line-height: 1.6;
+
+  background:
+    #111827;
+
+  color:
+    #d1fae5;
+
+  border-radius:
+    12px;
+
+  padding:
+    15px;
+
+  height:
+    230px;
+
+  overflow-y:
+    auto;
+
+  font-family:
+    Consolas,
+    monospace;
+
+  font-size:
+    12px;
+
+  white-space:
+    pre-wrap;
 }
 
-.log-item {
-  border-bottom: 1px solid #374151;
-  padding: 4px 0;
-}
-
-.log-success {
-  color: #86efac;
-}
-
-.log-error {
-  color: #fca5a5;
-}
-
-.log-info {
-  color: #93c5fd;
-}
 
 .empty {
-  text-align: center;
-  padding: 35px;
-  color: #6b7280;
+
+  text-align:
+    center;
+
+  padding:
+    35px;
+
+  color:
+    #6b7280;
 }
 
-@media (max-width: 700px) {
 
-  .container {
-    width: 96%;
-    margin: 15px auto;
-  }
+.small {
 
-  .header {
-    padding: 22px;
+  font-size:
+    12px;
+
+  color:
+    #6b7280;
+}
+
+
+@media (
+  max-width: 800px
+) {
+
+  .summary {
+
+    grid-template-columns:
+      repeat(
+        2,
+        1fr
+      );
   }
 
   .header h1 {
-    font-size: 22px;
+
+    font-size:
+      22px;
   }
 
-  .input-group {
-    flex-direction: column;
+}
+
+
+@media (
+  max-width: 500px
+) {
+
+  .container {
+
+    width:
+      96%;
+
+    margin:
+      15px auto;
   }
 
-  .input-group button {
-    width: 100%;
+
+  .card {
+
+    padding:
+      14px;
   }
+
 
   .summary {
-    grid-template-columns: repeat(2, 1fr);
+
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+
+  button {
+
+    width:
+      100%;
   }
 
 }
@@ -368,48 +656,50 @@ tr:hover td {
 
 </head>
 
+
 <body>
+
 
 <div class="container">
 
+
+  <!-- =======================================================
+       HEADER
+       ======================================================= -->
+
   <div class="header">
 
-    <h1>Google Slides → PDF Converter</h1>
+    <h1>
+      Google Slides → PDF Converter
+    </h1>
 
     <p>
-      Konversi Google Slides menjadi PDF langsung ke komputer.
+      Konversi cepat Google Slides menjadi PDF
     </p>
 
   </div>
 
 
+  <!-- =======================================================
+       FOLDER
+       ======================================================= -->
+
   <div class="card">
 
-    <div class="card-title">
-      📁 Folder Google Drive
-    </div>
+    <label>
+      URL Folder Google Drive
+    </label>
 
-    <div class="input-group">
+    <input
+      type="text"
+      id="folderUrl"
+      placeholder="https://drive.google.com/drive/folders/..."
+    >
 
-      <input
-        type="text"
-        id="folderUrl"
-        placeholder="Tempel link folder Google Drive di sini"
-      >
-
-      <button
-        class="btn-primary"
-        id="btnScan"
-        onclick="scanFolder()"
-      >
-        🔍 SCAN FOLDER
-      </button>
-
-    </div>
 
     <div class="options">
 
-      <label class="option">
+      <label class="check">
 
         <input
           type="checkbox"
@@ -417,11 +707,12 @@ tr:hover td {
           checked
         >
 
-        Scan termasuk subfolder
+        Scan subfolder
 
       </label>
 
-      <label class="option">
+
+      <label class="check">
 
         <input
           type="checkbox"
@@ -434,136 +725,163 @@ tr:hover td {
 
     </div>
 
-    <div
-      id="status"
-      class="status"
-    >
-      Silakan masukkan link folder Google Drive.
-    </div>
 
-  </div>
+    <div class="buttons">
 
-
-  <div
-    class="summary"
-    id="summary"
-    style="display:none;"
-  >
-
-    <div class="summary-box">
-
-      <div class="summary-label">
-        GOOGLE SLIDES
-      </div>
-
-      <div
-        class="summary-value"
-        id="totalSlides"
+      <button
+        class="btn-primary"
+        id="btnScan"
+        onclick="scanFolder()"
       >
-        0
-      </div>
+        🔍 SCAN FOLDER
+      </button>
 
-    </div>
-
-    <div class="summary-box">
-
-      <div class="summary-label">
-        SUBFOLDER
-      </div>
-
-      <div
-        class="summary-value"
-        id="totalFolders"
-      >
-        0
-      </div>
-
-    </div>
-
-    <div class="summary-box">
-
-      <div class="summary-label">
-        TERPILIH
-      </div>
-
-      <div
-        class="summary-value"
-        id="selectedCount"
-      >
-        0
-      </div>
-
-    </div>
-
-    <div class="summary-box">
-
-      <div class="summary-label">
-        SUDAH CONVERT
-      </div>
-
-      <div
-        class="summary-value"
-        id="convertedCount"
-      >
-        0
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div
-    class="card"
-    id="fileCard"
-    style="display:none;"
-  >
-
-    <div class="card-title">
-      📋 Daftar Google Slides
-    </div>
-
-    <div class="toolbar">
 
       <button
         class="btn-secondary"
-        onclick="selectAllFiles()"
+        onclick="loadHistory()"
       >
-        ☑️ PILIH SEMUA
+        📜 HISTORY
       </button>
 
-      <button
-        class="btn-secondary"
-        onclick="unselectAllFiles()"
-      >
-        ⬜ BATALKAN SEMUA
-      </button>
-
-      <button
-        class="btn-success"
-        id="btnConvert"
-        onclick="convertSelected()"
-      >
-        🚀 CONVERT TERPILIH
-      </button>
-
-      <button
-        class="btn-warning"
-        onclick="convertAll()"
-      >
-        🔄 CONVERT SEMUA
-      </button>
 
       <button
         class="btn-danger"
         onclick="clearHistory()"
       >
-        🗑️ HAPUS RIWAYAT
+        🗑 CLEAR HISTORY
       </button>
 
     </div>
 
-    <div class="table-wrapper">
+  </div>
+
+
+  <!-- =======================================================
+       SUMMARY
+       ======================================================= -->
+
+  <div class="summary">
+
+    <div class="summary-card">
+
+      <div>
+        Total Slides
+      </div>
+
+      <div
+        class="number"
+        id="summaryTotal"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div>
+        Dipilih
+      </div>
+
+      <div
+        class="number"
+        id="summarySelected"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div>
+        Berhasil
+      </div>
+
+      <div
+        class="number"
+        id="summarySuccess"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div>
+        Gagal
+      </div>
+
+      <div
+        class="number"
+        id="summaryFailed"
+      >
+        0
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =======================================================
+       FILE TABLE
+       ======================================================= -->
+
+  <div class="card">
+
+    <div
+      class="buttons"
+      style="margin-top:0"
+    >
+
+      <button
+        class="btn-secondary"
+        onclick="selectAll()"
+      >
+        ☑ PILIH SEMUA
+      </button>
+
+
+      <button
+        class="btn-secondary"
+        onclick="deselectAll()"
+      >
+        ☐ BATALKAN SEMUA
+      </button>
+
+
+      <button
+        class="btn-success"
+        id="btnSelected"
+        onclick="convertSelected()"
+        disabled
+      >
+        ⚡ CONVERT TERPILIH
+      </button>
+
+
+      <button
+        class="btn-warning"
+        id="btnAll"
+        onclick="convertAll()"
+        disabled
+      >
+        🚀 CONVERT SEMUA
+      </button>
+
+    </div>
+
+
+    <div
+      class="table-wrap"
+      style="margin-top:15px"
+    >
 
       <table>
 
@@ -571,33 +889,51 @@ tr:hover td {
 
           <tr>
 
-            <th width="50">
+            <th>
+              #
+            </th>
 
+            <th>
               <input
                 type="checkbox"
-                id="selectAll"
-                onchange="toggleAll(this)"
+                id="masterCheck"
+                onchange="toggleMaster(this)"
               >
-
             </th>
 
             <th>
-              FILE GOOGLE SLIDES
+              Nama Google Slides
             </th>
 
             <th>
-              STATUS
+              Folder
             </th>
 
             <th>
-              TERAKHIR DIUBAH
+              Ukuran
+            </th>
+
+            <th>
+              Status
             </th>
 
           </tr>
 
         </thead>
 
-        <tbody id="fileTable">
+        <tbody id="fileTableBody">
+
+          <tr>
+
+            <td
+              colspan="6"
+              class="empty"
+            >
+              Belum melakukan scan folder.
+            </td>
+
+          </tr>
+
         </tbody>
 
       </table>
@@ -607,198 +943,102 @@ tr:hover td {
   </div>
 
 
-  <div
-    class="card progress-area"
-    id="progressArea"
-  >
-
-    <div class="card-title">
-      ⚙️ Progress Conversion
-    </div>
-
-    <div class="progress-header">
-
-      <span id="progressText">
-        Menyiapkan...
-      </span>
-
-      <span id="progressStep">
-        0 / 0
-      </span>
-
-    </div>
-
-    <div class="progress-bar">
-
-      <div
-        class="progress-fill"
-        id="progressFill"
-      ></div>
-
-    </div>
-
-    <div
-      class="progress-percent"
-      id="progressPercent"
-    >
-      0%
-    </div>
-
-  </div>
-
+  <!-- =======================================================
+       PROGRESS
+       ======================================================= -->
 
   <div class="card">
 
-    <div class="card-title">
-      📝 Log Proses
-    </div>
+    <h3 style="margin-top:0">
+      ⚙️ Progress Conversion
+    </h3>
 
-    <div
-      class="log"
-      id="log"
-    >
 
-      <div class="log-item log-info">
-        Sistem siap digunakan.
+    <div class="progress-box">
+
+      <div class="progress-header">
+
+        <span id="progressLabel">
+          Menunggu proses...
+        </span>
+
+        <span id="progressPercent">
+          0%
+        </span>
+
+      </div>
+
+
+      <div class="progress-track">
+
+        <div
+          class="progress-bar"
+          id="progressBar"
+        ></div>
+
+      </div>
+
+
+      <div
+        class="progress-note"
+        id="progressNote"
+      >
+        Siap.
       </div>
 
     </div>
 
   </div>
 
+
+  <!-- =======================================================
+       LOG
+       ======================================================= -->
+
+  <div class="card">
+
+    <h3 style="margin-top:0">
+      📋 Log Proses
+    </h3>
+
+    <div
+      class="log"
+      id="log"
+    ></div>
+
+  </div>
+
+
 </div>
-
-
-<!-- =========================================================
-     JSZIP
-========================================================= -->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
-
-<!-- =========================================================
-     PDF-LIB
-     
-     Digunakan HANYA untuk menggabungkan PDF chunk
-     menjadi SATU PDF FINAL.
-========================================================= -->
-
-<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
 
 <script>
 
-/* =========================================================
-   KONFIGURASI API
-========================================================= */
+
+/* ============================================================
+   API URL
+   ============================================================ */
 
 const API_URL =
   'https://script.google.com/macros/s/AKfycbzi0Z6VaceKXwHtAGFUwrSjBYNgeeKCc1CQV5apiSUpygUuojaMPl95vUhlqwwSqzxLoA/exec';
 
 
-/*
- * HARUS SAMA DENGAN BACKEND.
- *
- * Ini bukan jumlah part hasil.
- *
- * Ini hanya jumlah slide yang diproses
- * dalam satu request internal.
- */
-const LARGE_CHUNK_SIZE =
-  8;
+/* ============================================================
+   STATE
+   ============================================================ */
 
+let scannedFiles = [];
 
-/* =========================================================
-   DATA GLOBAL
-========================================================= */
-
-let files = [];
+let conversionResults = [];
 
 let converting = false;
 
 
-/* =========================================================
-   STATUS
-========================================================= */
-
-function setStatus(
-  message,
-  type = 'info'
-) {
-
-  const el =
-    document.getElementById(
-      'status'
-    );
-
-
-  el.textContent =
-    message;
-
-
-  el.className =
-    'status ' +
-    type;
-
-}
-
-
-/* =========================================================
-   LOG
-========================================================= */
-
-function addLog(
-  message,
-  type = 'info'
-) {
-
-  const log =
-    document.getElementById(
-      'log'
-    );
-
-
-  const item =
-    document.createElement(
-      'div'
-    );
-
-
-  item.className =
-    'log-item log-' +
-    type;
-
-
-  const time =
-    new Date()
-      .toLocaleTimeString();
-
-
-  item.textContent =
-    '[' +
-    time +
-    '] ' +
-    message;
-
-
-  log.appendChild(
-    item
-  );
-
-
-  log.scrollTop =
-    log.scrollHeight;
-
-}
-
-
-/* =========================================================
+/* ============================================================
    API REQUEST
-========================================================= */
+   ============================================================ */
 
-async function apiRequest(
-  payload
-) {
+async function apiPost(payload) {
 
   const response =
     await fetch(
@@ -808,17 +1048,16 @@ async function apiRequest(
         method:
           'POST',
 
-        headers:
-          {
-            'Content-Type':
-              'text/plain;charset=utf-8'
-          },
+        headers: {
+
+          'Content-Type':
+            'text/plain;charset=utf-8'
+        },
 
         body:
           JSON.stringify(
             payload
           )
-
       }
     );
 
@@ -829,22 +1068,131 @@ async function apiRequest(
       'HTTP Error ' +
       response.status
     );
-
   }
 
 
-  const result =
-    await response.json();
+  const text =
+    await response.text();
 
 
-  return result;
+  let json;
 
+
+  try {
+
+    json =
+      JSON.parse(
+        text
+      );
+
+  } catch (err) {
+
+    throw new Error(
+      'Response API bukan JSON: ' +
+      text.substring(
+        0,
+        300
+      )
+    );
+  }
+
+
+  if (
+    !json.success &&
+    !json.tooLarge
+  ) {
+
+    throw new Error(
+      json.message ||
+      'API gagal.'
+    );
+  }
+
+
+  return json;
 }
 
 
-/* =========================================================
-   SCAN FOLDER
-========================================================= */
+/* ============================================================
+   LOG
+   ============================================================ */
+
+function log(message) {
+
+  const box =
+    document.getElementById(
+      'log'
+    );
+
+
+  const time =
+    new Date()
+      .toLocaleTimeString(
+        'id-ID'
+      );
+
+
+  box.textContent +=
+    '[' +
+    time +
+    '] ' +
+    message +
+    '\n';
+
+
+  box.scrollTop =
+    box.scrollHeight;
+}
+
+
+/* ============================================================
+   PROGRESS
+   ============================================================ */
+
+function setProgress(
+  percent,
+  label,
+  note
+) {
+
+  percent =
+    Math.max(
+      0,
+      Math.min(
+        100,
+        Number(percent) || 0
+      )
+    );
+
+
+  document.getElementById(
+    'progressBar'
+  ).style.width =
+    percent + '%';
+
+
+  document.getElementById(
+    'progressPercent'
+  ).textContent =
+    Math.round(percent) + '%';
+
+
+  document.getElementById(
+    'progressLabel'
+  ).textContent =
+    label || 'Memproses...';
+
+
+  document.getElementById(
+    'progressNote'
+  ).textContent =
+    note || '';
+}
+
+
+/* ============================================================
+   SCAN
+   ============================================================ */
 
 async function scanFolder() {
 
@@ -854,65 +1202,53 @@ async function scanFolder() {
 
 
   const folderUrl =
-    document
-      .getElementById(
-        'folderUrl'
-      )
-      .value
-      .trim();
+    document.getElementById(
+      'folderUrl'
+    ).value.trim();
 
 
   if (!folderUrl) {
 
-    setStatus(
-      'Link folder Google Drive belum diisi.',
-      'error'
+    alert(
+      'Masukkan URL folder Google Drive.'
     );
 
     return;
-
   }
 
 
   const recursive =
-    document
-      .getElementById(
-        'recursive'
-      )
-      .checked;
+    document.getElementById(
+      'recursive'
+    ).checked;
 
 
-  const btn =
-    document
-      .getElementById(
-        'btnScan'
-      );
+  const button =
+    document.getElementById(
+      'btnScan'
+    );
 
 
-  btn.disabled =
+  button.disabled =
     true;
-
-
-  btn.textContent =
-    '⏳ SCANNING...';
-
-
-  setStatus(
-    'Sedang membaca folder Google Drive...',
-    'info'
-  );
-
-
-  addLog(
-    'Memulai scan folder.',
-    'info'
-  );
 
 
   try {
 
+    log(
+      'Memulai scan folder.'
+    );
+
+
+    setProgress(
+      5,
+      'Scanning folder...',
+      'Membaca Google Drive.'
+    );
+
+
     const result =
-      await apiRequest({
+      await apiPost({
 
         action:
           'scan',
@@ -922,7 +1258,6 @@ async function scanFolder() {
 
         recursive:
           recursive
-
       });
 
 
@@ -930,14 +1265,12 @@ async function scanFolder() {
 
       throw new Error(
         result.message ||
-        result.error ||
-        'Scan folder gagal.'
+        'Scan gagal.'
       );
-
     }
 
 
-    files =
+    scannedFiles =
       Array.isArray(
         result.files
       )
@@ -945,118 +1278,92 @@ async function scanFolder() {
         : [];
 
 
-    renderFiles(
-      files
-    );
+    renderFiles();
 
 
-    updateSummary();
-
-
-    document
-      .getElementById(
-        'summary'
-      )
-      .style.display =
-        'grid';
-
-
-    document
-      .getElementById(
-        'fileCard'
-      )
-      .style.display =
-        'block';
-
-
-    setStatus(
-      'Scan selesai. Ditemukan ' +
-      files.length +
-      ' Google Slides.',
-      'success'
-    );
-
-
-    addLog(
+    log(
       'Scan selesai: ' +
-      files.length +
-      ' Google Slides ditemukan.',
-      'success'
+      scannedFiles.length +
+      ' Google Slides ditemukan.'
     );
 
 
-  } catch (error) {
-
-    console.error(
-      error
+    setProgress(
+      100,
+      'Scan selesai',
+      scannedFiles.length +
+      ' Google Slides ditemukan.'
     );
 
 
-    setStatus(
-      error.message ||
-      'Scan folder gagal.',
-      'error'
+  } catch (err) {
+
+    console.error(err);
+
+
+    log(
+      'ERROR SCAN: ' +
+      err.message
     );
 
 
-    addLog(
-      'SCAN GAGAL: ' +
-      (
-        error.message ||
-        error
-      ),
-      'error'
+    setProgress(
+      0,
+      'Scan gagal',
+      err.message
+    );
+
+
+    alert(
+      'Scan gagal:\n\n' +
+      err.message
     );
 
 
   } finally {
 
-    btn.disabled =
+    button.disabled =
       false;
-
-
-    btn.textContent =
-      '🔍 SCAN FOLDER';
-
   }
-
 }
 
 
-/* =========================================================
-   RENDER FILE
-========================================================= */
+/* ============================================================
+   RENDER FILES
+   ============================================================ */
 
-function renderFiles(
-  list
-) {
+function renderFiles() {
 
-  const tbody =
+  const body =
     document.getElementById(
-      'fileTable'
+      'fileTableBody'
     );
 
 
-  tbody.innerHTML =
+  body.innerHTML =
     '';
 
 
-  if (!list.length) {
+  if (
+    scannedFiles.length === 0
+  ) {
 
-    tbody.innerHTML =
+    body.innerHTML =
+
       '<tr>' +
-      '<td colspan="4" class="empty">' +
+      '<td colspan="6" class="empty">' +
       'Tidak ada Google Slides ditemukan.' +
       '</td>' +
       '</tr>';
 
 
-    return;
+    updateSummary();
 
+    return;
   }
 
 
-  list.forEach(
+  scannedFiles.forEach(
     function(file, index) {
 
       const tr =
@@ -1065,96 +1372,148 @@ function renderFiles(
         );
 
 
-      const already =
-        file.alreadyConverted === true ||
-        (
-          file.status &&
-          file.status.converted === true
-        );
+      const checked =
+        file.selected
+          ? 'checked'
+          : '';
+
+
+      let statusHTML;
+
+
+      if (
+        file.alreadyConverted
+      ) {
+
+        statusHTML =
+          '<span class="status status-done">' +
+          'SUDAH DIKONVERSI' +
+          '</span>';
+
+      } else {
+
+        statusHTML =
+          '<span class="status status-new">' +
+          'SIAP' +
+          '</span>';
+      }
 
 
       tr.innerHTML =
 
         '<td>' +
+        (index + 1) +
+        '</td>' +
+
+        '<td>' +
 
         '<input ' +
         'type="checkbox" ' +
-        'class="file-check" ' +
+        'class="fileCheck" ' +
         'data-index="' +
         index +
         '" ' +
-        'onchange="updateSummary()">' +
+        checked +
+        '>' +
 
         '</td>' +
 
         '<td>' +
 
-        '<div class="file-name">' +
+        '<strong>' +
         escapeHtml(
           file.name
         ) +
+        '</strong>' +
+
+        '<div class="small">' +
+        escapeHtml(
+          file.id
+        ) +
         '</div>' +
 
-        '<div class="file-path">' +
+        '</td>' +
+
+        '<td>' +
+
         escapeHtml(
-          file.relativePath ||
-          file.path ||
-          file.folderName ||
+          file.folder ||
           ''
         ) +
-        '</div>' +
 
         '</td>' +
 
         '<td>' +
 
-        (
-          already
-
-            ?
-
-            '<span class="badge badge-done">' +
-            '✓ SUDAH CONVERT' +
-            '</span>'
-
-            :
-
-            '<span class="badge badge-new">' +
-            'BELUM CONVERT' +
-            '</span>'
+        formatSize(
+          file.size
         ) +
 
         '</td>' +
 
         '<td>' +
 
-        formatDate(
-          file.updated
-        ) +
+        statusHTML +
 
         '</td>';
 
 
-      tbody.appendChild(
+      body.appendChild(
         tr
       );
-
     }
   );
 
+
+  document
+    .querySelectorAll(
+      '.fileCheck'
+    )
+    .forEach(
+      function(check) {
+
+        check.addEventListener(
+          'change',
+          function() {
+
+            const index =
+              Number(
+                this.dataset.index
+              );
+
+
+            scannedFiles[index]
+              .selected =
+              this.checked;
+
+
+            updateSummary();
+          }
+        );
+      }
+    );
+
+
+  updateSummary();
+
+
+  document.getElementById(
+    'btnAll'
+  ).disabled =
+    scannedFiles.length === 0;
 }
 
 
-/* =========================================================
+/* ============================================================
    ESCAPE HTML
-========================================================= */
+   ============================================================ */
 
-function escapeHtml(
-  text
-) {
+function escapeHtml(value) {
 
   return String(
-    text || ''
+    value == null
+      ? ''
+      : value
   )
   .replace(
     /&/g,
@@ -1176,361 +1535,221 @@ function escapeHtml(
     /'/g,
     '&#039;'
   );
-
 }
 
 
-/* =========================================================
-   FORMAT DATE
-========================================================= */
+/* ============================================================
+   FORMAT SIZE
+   ============================================================ */
 
-function formatDate(
-  value
+function formatSize(
+  bytes
 ) {
 
-  if (!value) {
-    return '-';
+  bytes =
+    Number(bytes) || 0;
+
+
+  if (
+    bytes <= 0
+  ) {
+
+    return 'Google Slides';
   }
 
 
-  try {
+  if (
+    bytes < 1024 * 1024
+  ) {
 
-    return new Date(
-      value
-    ).toLocaleString(
-      'id-ID'
-    );
-
-  } catch (e) {
-
-    return value;
-
+    return (
+      bytes /
+      1024
+    ).toFixed(1) +
+    ' KB';
   }
 
+
+  return (
+    bytes /
+    1024 /
+    1024
+  ).toFixed(2) +
+  ' MB';
 }
 
 
-/* =========================================================
-   SELECT ALL
-========================================================= */
+/* ============================================================
+   MASTER CHECK
+   ============================================================ */
 
-function toggleAll(
+function toggleMaster(
   checkbox
 ) {
 
-  document
-    .querySelectorAll(
-      '.file-check'
-    )
-    .forEach(
-      function(item) {
-
-        item.checked =
-          checkbox.checked;
-
-      }
-    );
-
-
-  updateSummary();
-
-}
-
-
-/* =========================================================
-   SELECT ALL FILES
-========================================================= */
-
-function selectAllFiles() {
-
-  document
-    .querySelectorAll(
-      '.file-check'
-    )
-    .forEach(
-      function(item) {
-
-        item.checked =
-          true;
-
-      }
-    );
-
-
-  document
-    .getElementById(
-      'selectAll'
-    )
-    .checked =
-      true;
-
-
-  updateSummary();
-
-}
-
-
-/* =========================================================
-   UNSELECT ALL
-========================================================= */
-
-function unselectAllFiles() {
-
-  document
-    .querySelectorAll(
-      '.file-check'
-    )
-    .forEach(
-      function(item) {
-
-        item.checked =
-          false;
-
-      }
-    );
-
-
-  document
-    .getElementById(
-      'selectAll'
-    )
-    .checked =
-      false;
-
-
-  updateSummary();
-
-}
-
-
-/* =========================================================
-   UPDATE SUMMARY
-========================================================= */
-
-function updateSummary() {
-
-  const selected =
-    document.querySelectorAll(
-      '.file-check:checked'
-    ).length;
-
-
-  const converted =
-    files.filter(
-      function(file) {
-
-        return (
-          file.alreadyConverted === true
-          ||
-          (
-            file.status &&
-            file.status.converted === true
-          )
-        );
-
-      }
-    ).length;
-
-
-  document
-    .getElementById(
-      'totalSlides'
-    )
-    .textContent =
-      files.length;
-
-
-  document
-    .getElementById(
-      'totalFolders'
-    )
-    .textContent =
-      getFolderCount();
-
-
-  document
-    .getElementById(
-      'selectedCount'
-    )
-    .textContent =
-      selected;
-
-
-  document
-    .getElementById(
-      'convertedCount'
-    )
-    .textContent =
-      converted;
-
-}
-
-
-/* =========================================================
-   FOLDER COUNT
-========================================================= */
-
-function getFolderCount() {
-
-  const paths =
-    new Set();
-
-
-  files.forEach(
+  scannedFiles.forEach(
     function(file) {
 
-      const path =
-        file.relativePath ||
-        file.path ||
-        file.folderName ||
-        '';
-
-
-      if (path) {
-
-        paths.add(
-          path
-        );
-
-      }
-
+      file.selected =
+        checkbox.checked;
     }
   );
 
 
-  return paths.size;
-
-}
-
-
-/* =========================================================
-   GET SELECTED
-========================================================= */
-
-function getSelectedFiles() {
-
-  const selected = [];
-
-
   document
     .querySelectorAll(
-      '.file-check:checked'
+      '.fileCheck'
     )
     .forEach(
       function(check) {
 
-        const index =
-          Number(
-            check.dataset.index
-          );
-
-
-        if (
-          files[index]
-        ) {
-
-          selected.push(
-            files[index]
-          );
-
-        }
-
+        check.checked =
+          checkbox.checked;
       }
     );
 
 
-  return selected;
-
+  updateSummary();
 }
 
 
-/* =========================================================
-   PROGRESS
-========================================================= */
+/* ============================================================
+   SELECT ALL
+   ============================================================ */
 
-function startProgress(
-  total
-) {
+function selectAll() {
 
-  const area =
-    document.getElementById(
-      'progressArea'
+  scannedFiles.forEach(
+    function(file) {
+
+      file.selected =
+        true;
+    }
+  );
+
+
+  document
+    .querySelectorAll(
+      '.fileCheck'
+    )
+    .forEach(
+      function(check) {
+
+        check.checked =
+          true;
+      }
     );
 
 
-  area.classList.add(
-    'active'
-  );
+  document.getElementById(
+    'masterCheck'
+  ).checked =
+    true;
 
 
-  updateProgress(
-    0,
-    total,
-    'Menyiapkan conversion...'
-  );
-
+  updateSummary();
 }
 
 
-function updateProgress(
-  current,
-  total,
-  text
-) {
+/* ============================================================
+   DESELECT
+   ============================================================ */
 
-  const percent =
-    total > 0
-      ? Math.round(
-          (
-            current /
-            total
-          ) *
-          100
-        )
-      : 0;
+function deselectAll() {
+
+  scannedFiles.forEach(
+    function(file) {
+
+      file.selected =
+        false;
+    }
+  );
 
 
   document
-    .getElementById(
-      'progressFill'
+    .querySelectorAll(
+      '.fileCheck'
     )
-    .style.width =
-      percent +
-      '%';
+    .forEach(
+      function(check) {
+
+        check.checked =
+          false;
+      }
+    );
 
 
-  document
-    .getElementById(
-      'progressPercent'
-    )
-    .textContent =
-      percent +
-      '%';
+  document.getElementById(
+    'masterCheck'
+  ).checked =
+    false;
 
 
-  document
-    .getElementById(
-      'progressStep'
-    )
-    .textContent =
-      current +
-      ' / ' +
-      total;
-
-
-  document
-    .getElementById(
-      'progressText'
-    )
-    .textContent =
-      text;
-
+  updateSummary();
 }
 
 
-/* =========================================================
+/* ============================================================
+   SUMMARY
+   ============================================================ */
+
+function updateSummary() {
+
+  const selected =
+    scannedFiles.filter(
+      function(file) {
+
+        return file.selected;
+      }
+    ).length;
+
+
+  document.getElementById(
+    'summaryTotal'
+  ).textContent =
+    scannedFiles.length;
+
+
+  document.getElementById(
+    'summarySelected'
+  ).textContent =
+    selected;
+
+
+  document.getElementById(
+    'summarySuccess'
+  ).textContent =
+    conversionResults.filter(
+      function(item) {
+
+        return item.success;
+      }
+    ).length;
+
+
+  document.getElementById(
+    'summaryFailed'
+  ).textContent =
+    conversionResults.filter(
+      function(item) {
+
+        return !item.success &&
+               !item.skipped;
+      }
+    ).length;
+
+
+  document.getElementById(
+    'btnSelected'
+  ).disabled =
+    selected === 0 ||
+    converting;
+}
+
+
+/* ============================================================
    CONVERT SELECTED
-========================================================= */
+   ============================================================ */
 
 async function convertSelected() {
 
@@ -1539,43 +1758,36 @@ async function convertSelected() {
   }
 
 
-  const selected =
-    getSelectedFiles();
+  const files =
+    scannedFiles.filter(
+      function(file) {
+
+        return file.selected;
+      }
+    );
 
 
   if (
-    selected.length === 0
+    files.length === 0
   ) {
 
-    setStatus(
-      'Belum ada file yang dipilih.',
-      'error'
+    alert(
+      'Pilih minimal satu Google Slides.'
     );
 
     return;
-
   }
 
 
-  const force =
-    document
-      .getElementById(
-        'forceConvert'
-      )
-      .checked;
-
-
-  await processConversion(
-    selected,
-    force
+  await runConversion(
+    files
   );
-
 }
 
 
-/* =========================================================
+/* ============================================================
    CONVERT ALL
-========================================================= */
+   ============================================================ */
 
 async function convertAll() {
 
@@ -1585,428 +1797,332 @@ async function convertAll() {
 
 
   if (
-    files.length === 0
+    scannedFiles.length === 0
   ) {
 
-    setStatus(
-      'Belum ada hasil scan folder.',
-      'error'
+    alert(
+      'Belum ada hasil scan.'
     );
 
     return;
-
   }
 
 
-  const force =
-    document
-      .getElementById(
-        'forceConvert'
-      )
-      .checked;
-
-
-  await processConversion(
-    files,
-    force
+  await runConversion(
+    scannedFiles.slice()
   );
-
 }
 
 
-/* =========================================================
-   PROCESS CONVERSION
-========================================================= */
+/* ============================================================
+   MAIN CONVERSION
+   ============================================================ */
 
-async function processConversion(
-  selectedFiles,
-  force
+async function runConversion(
+  files
 ) {
+
+  if (converting) {
+    return;
+  }
+
 
   converting =
     true;
 
 
-  const total =
-    selectedFiles.length;
+  conversionResults =
+    [];
 
 
-  startProgress(
-    total
+  updateSummary();
+
+
+  document.getElementById(
+    'btnSelected'
+  ).disabled =
+    true;
+
+
+  document.getElementById(
+    'btnAll'
+  ).disabled =
+    true;
+
+
+  const force =
+    document.getElementById(
+      'forceConvert'
+    ).checked;
+
+
+  const finalPDFs = [];
+
+
+  log(
+    '================================'
   );
 
 
-  setStatus(
-    'Memulai conversion ' +
-    total +
-    ' file...',
-    'info'
-  );
-
-
-  addLog(
+  log(
     'Conversion dimulai. Total: ' +
-    total +
-    ' file.',
-    'info'
+    files.length +
+    ' file.'
   );
-
-
-  const pdfResults = [];
-
-
-  let successCount = 0;
-
-  let skippedCount = 0;
-
-  let failedCount = 0;
 
 
   try {
 
     for (
       let i = 0;
-      i < selectedFiles.length;
+      i < files.length;
       i++
     ) {
 
       const file =
-        selectedFiles[i];
+        files[i];
 
 
-      updateProgress(
-        i,
-        total,
-        'Memproses: ' +
+      const overallStart =
+        (
+          i /
+          files.length
+        ) * 100;
+
+
+      setProgress(
+
+        overallStart,
+
+        'Memproses file ' +
+        (i + 1) +
+        ' / ' +
+        files.length,
+
         file.name
       );
 
 
-      addLog(
+      log(
         'Memproses ' +
         (i + 1) +
         '/' +
-        total +
+        files.length +
         ': ' +
-        file.name,
-        'info'
+        file.name
       );
 
 
       try {
 
-        /*
-         * COBA NORMAL TERLEBIH DAHULU.
-         */
         const result =
-          await apiRequest({
-
-            action:
-              'convertOne',
-
-            fileId:
-              file.id ||
-              file.fileId,
-
-            force:
-              force
-
-          });
-
-
-        if (!result.success) {
-
-          throw new Error(
-            result.message ||
-            result.error ||
-            'Konversi gagal.'
+          await convertOneSmart(
+            file,
+            force,
+            i,
+            files.length
           );
 
-        }
 
-
-        /*
-         * SKIP HISTORY.
-         */
         if (
           result.skipped
         ) {
 
-          skippedCount++;
+          conversionResults.push({
 
+            success: true,
 
-          addLog(
-            'SKIP: ' +
-            file.name +
-            ' sudah pernah berhasil dikonversi.',
-            'info'
-          );
+            skipped: true,
 
-
-          continue;
-
-        }
-
-
-        /*
-         * FILE BESAR.
-         *
-         * Sekarang jangan dianggap gagal.
-         *
-         * Jalankan mode internal chunk.
-         */
-        if (
-          result.tooLarge
-        ) {
-
-          addLog(
-            'FILE BESAR: ' +
-            file.name +
-            ' → menggunakan mode internal chunk.',
-            'info'
-          );
-
-
-          const largePdf =
-            await convertLargeToSinglePDF(
-              file,
-              i,
-              total
-            );
-
-
-          pdfResults.push({
-
-            name:
-              largePdf.name,
-
-            bytes:
-              largePdf.bytes
-
+            file:
+              file
           });
 
 
-          successCount++;
-
-
-          addLog(
-            'BERHASIL: ' +
+          log(
+            'SKIP: ' +
             file.name +
-            ' → 1 PDF UTUH berhasil dibuat.',
-            'success'
+            ' → sudah pernah dikonversi.'
           );
 
 
           continue;
-
         }
 
 
-        /*
-         * FILE NORMAL.
-         */
         if (
-          !result.base64
+          result.success &&
+          result.bytes
         ) {
 
-          throw new Error(
-            'Data PDF Base64 tidak diterima dari server.'
+          finalPDFs.push({
+
+            name:
+              result.pdfName,
+
+            bytes:
+              result.bytes,
+
+            file:
+              file
+          });
+
+
+          conversionResults.push({
+
+            success: true,
+
+            skipped: false,
+
+            file:
+              file
+          });
+
+
+          log(
+            'BERHASIL: ' +
+            file.name +
+            ' → ' +
+            result.pdfName
           );
 
+
+        } else {
+
+          throw new Error(
+            result.message ||
+            'Konversi gagal.'
+          );
         }
 
 
-        const bytes =
-          base64ToBytes(
-            result.base64
-          );
+      } catch (err) {
 
+        conversionResults.push({
 
-        pdfResults.push({
+          success: false,
 
-          name:
-            result.pdfName ||
-            file.name +
-            '.pdf',
+          skipped: false,
 
-          bytes:
-            bytes
+          file:
+            file,
 
+          message:
+            err.message
         });
 
 
-        successCount++;
-
-
-        addLog(
-          'BERHASIL: ' +
-          file.name,
-          'success'
-        );
-
-
-      } catch (error) {
-
-        failedCount++;
-
-
-        addLog(
+        log(
           'GAGAL: ' +
           file.name +
           ' → ' +
-          (
-            error.message ||
-            error
-          ),
-          'error'
+          err.message
         );
-
       }
 
 
-      updateProgress(
-        i + 1,
-        total,
-        'Selesai: ' +
-        file.name
-      );
-
+      updateSummary();
     }
-
-
-    updateProgress(
-      total,
-      total,
-      'Conversion selesai.'
-    );
 
 
     /*
      * DOWNLOAD
      */
+
     if (
-      pdfResults.length === 1
+      finalPDFs.length === 1
     ) {
 
-      addLog(
-        '1 PDF utuh berhasil dibuat. Menyiapkan download.',
-        'success'
+      log(
+        'Menyiapkan 1 PDF final untuk download.'
       );
 
 
-      downloadPdfBytes(
-        pdfResults[0]
+      downloadBytes(
+
+        finalPDFs[0].bytes,
+
+        finalPDFs[0].name,
+
+        'application/pdf'
       );
 
+
+    } else if (
+      finalPDFs.length > 1
+    ) {
+
+      log(
+        'Menyiapkan ZIP berisi ' +
+        finalPDFs.length +
+        ' PDF final.'
+      );
+
+
+      await downloadZip(
+        finalPDFs
+      );
     }
-    else if (
-      pdfResults.length > 1
-    ) {
-
-      addLog(
-        pdfResults.length +
-        ' PDF berhasil dibuat. Menyiapkan ZIP.',
-        'success'
-      );
 
 
-      await createZipAndDownload(
-        pdfResults
-      );
+    const success =
+      conversionResults.filter(
+        function(item) {
 
-    }
-
-
-    setStatus(
-
-      'Selesai. Berhasil: ' +
-      successCount +
-      ' | Skip: ' +
-      skippedCount +
-      ' | Gagal: ' +
-      failedCount,
-
-      failedCount > 0
-        ? 'info'
-        : 'success'
-
-    );
-
-
-    addLog(
-
-      'PROSES SELESAI → Berhasil: ' +
-      successCount +
-      ', Skip: ' +
-      skippedCount +
-      ', Gagal: ' +
-      failedCount,
-
-      failedCount > 0
-        ? 'info'
-        : 'success'
-
-    );
-
-
-    /*
-     * Refresh tampilan history.
-     */
-    if (
-      successCount > 0
-    ) {
-
-      selectedFiles.forEach(
-        function(selectedFile) {
-
-          const found =
-            files.find(
-              function(item) {
-
-                return (
-                  (
-                    item.id ||
-                    item.fileId
-                  ) ===
-                  (
-                    selectedFile.id ||
-                    selectedFile.fileId
-                  )
-                );
-
-              }
-            );
-
-
-          if (found) {
-
-            found.alreadyConverted =
-              true;
-
-            found.status = {
-
-              converted:
-                true,
-
-              text:
-                'SUDAH CONVERT'
-
-            };
-
-          }
-
+          return item.success &&
+                 !item.skipped;
         }
-      );
+      ).length;
 
 
-      renderFiles(
-        files
-      );
+    const skipped =
+      conversionResults.filter(
+        function(item) {
+
+          return item.skipped;
+        }
+      ).length;
 
 
-      updateSummary();
+    const failed =
+      conversionResults.filter(
+        function(item) {
 
-    }
+          return !item.success &&
+                 !item.skipped;
+        }
+      ).length;
+
+
+    log(
+      '================================'
+    );
+
+
+    log(
+      'PROSES SELESAI → ' +
+      'Berhasil: ' +
+      success +
+      ', Skip: ' +
+      skipped +
+      ', Gagal: ' +
+      failed
+    );
+
+
+    setProgress(
+
+      100,
+
+      'PROSES SELESAI',
+
+      'Berhasil: ' +
+      success +
+      ' | Skip: ' +
+      skipped +
+      ' | Gagal: ' +
+      failed
+    );
 
 
   } finally {
@@ -2014,33 +2130,140 @@ async function processConversion(
     converting =
       false;
 
-  }
 
+    updateSummary();
+
+
+    document.getElementById(
+      'btnAll'
+    ).disabled =
+      scannedFiles.length === 0;
+
+  }
 }
 
 
-/* =========================================================
-   CONVERT FILE BESAR
-   HASIL AKHIR = 1 PDF
-========================================================= */
+/* ============================================================
+   SMART CONVERSION
+   ============================================================ */
 
-async function convertLargeToSinglePDF(
+async function convertOneSmart(
   file,
+  force,
   fileIndex,
   totalFiles
 ) {
 
+  /*
+   * REQUEST 1:
+   * Coba Google Export normal.
+   */
+
+  const result =
+    await apiPost({
+
+      action:
+        'convertOne',
+
+      fileId:
+        file.id ||
+        file.fileId,
+
+      force:
+        force
+    });
+
+
+  /*
+   * Sudah pernah dikonversi.
+   */
+
   if (
-    typeof PDFLib ===
-    'undefined'
+    result.skipped
   ) {
 
-    throw new Error(
-      'Library PDF-LIB belum berhasil dimuat.'
-    );
+    return {
 
+      success: true,
+
+      skipped: true
+    };
   }
 
+
+  /*
+   * Export normal berhasil.
+   */
+
+  if (
+    result.success &&
+    result.base64
+  ) {
+
+    return {
+
+      success: true,
+
+      skipped: false,
+
+      bytes:
+        base64ToUint8Array(
+          result.base64
+        ),
+
+      pdfName:
+        result.pdfName ||
+        (
+          removeExtension(
+            file.name
+          ) +
+          '.pdf'
+        )
+    };
+  }
+
+
+  /*
+   * File terlalu besar.
+   *
+   * Masuk FAST INTERNAL ENGINE.
+   */
+
+  if (
+    result.tooLarge
+  ) {
+
+    log(
+      'File besar → menggunakan engine cepat Direct PNG → PDF.'
+    );
+
+
+    return await convertLargeAsOnePdf(
+      file,
+      force,
+      fileIndex,
+      totalFiles
+    );
+  }
+
+
+  throw new Error(
+    result.message ||
+    'Konversi gagal.'
+  );
+}
+
+
+/* ============================================================
+   LARGE FILE → ONE FINAL PDF
+   ============================================================ */
+
+async function convertLargeAsOnePdf(
+  file,
+  force,
+  fileIndex,
+  totalFiles
+) {
 
   const fileId =
     file.id ||
@@ -2050,22 +2273,15 @@ async function convertLargeToSinglePDF(
   /*
    * Ambil informasi jumlah slide.
    */
-  addLog(
-    'Membaca jumlah slide: ' +
-    file.name,
-    'info'
-  );
-
 
   const info =
-    await apiRequest({
+    await apiPost({
 
       action:
-        'getSlideInfo',
+        'slideInfo',
 
-      presentationId:
+      fileId:
         fileId
-
     });
 
 
@@ -2073,10 +2289,8 @@ async function convertLargeToSinglePDF(
 
     throw new Error(
       info.message ||
-      info.error ||
       'Gagal membaca jumlah slide.'
     );
-
   }
 
 
@@ -2086,387 +2300,350 @@ async function convertLargeToSinglePDF(
     );
 
 
-  if (
-    !totalSlides ||
-    totalSlides < 1
-  ) {
-
-    throw new Error(
-      'Jumlah slide tidak valid.'
-    );
-
-  }
-
-
   const chunkSize =
     Number(
       info.chunkSize
-    ) ||
-    LARGE_CHUNK_SIZE;
+    ) || 10;
 
 
-  const totalChunks =
-    Math.ceil(
-      totalSlides /
-      chunkSize
-    );
-
-
-  addLog(
-    'File besar terdeteksi: ' +
-    totalSlides +
-    ' slide.',
-    'info'
-  );
-
-
-  addLog(
-    'Akan diproses internal menjadi ' +
-    totalChunks +
-    ' chunk, kemudian digabung menjadi 1 PDF.',
-    'info'
-  );
-
-
-  /*
-   * PDF FINAL.
-   */
-  const mergedPdf =
-    await PDFLib.PDFDocument.create();
-
-
-  /*
-   * PROSES CHUNK SATU PER SATU.
-   *
-   * Sengaja satu per satu agar server stabil.
-   */
-  for (
-    let chunkIndex = 0;
-    chunkIndex < totalChunks;
-    chunkIndex++
+  if (
+    totalSlides <= 0
   ) {
 
-    const startSlide =
-      (
-        chunkIndex *
-        chunkSize
-      ) + 1;
+    throw new Error(
+      'Google Slides tidak memiliki slide.'
+    );
+  }
 
 
-    const endSlide =
+  log(
+    'Total slide: ' +
+    totalSlides +
+    ' | proses cepat internal.'
+  );
+
+
+  const chunkPDFs = [];
+
+
+  let chunkNumber = 0;
+
+
+  /*
+   * INTERNAL CHUNK.
+   *
+   * User tetap mendapatkan SATU PDF.
+   */
+
+  for (
+    let start = 0;
+    start < totalSlides;
+    start += chunkSize
+  ) {
+
+    const end =
       Math.min(
-        startSlide +
-        chunkSize -
-        1,
+        start +
+        chunkSize,
         totalSlides
       );
 
 
+    chunkNumber++;
+
+
+    /*
+     * Progress maksimum 90%.
+     * 100% baru setelah PDF final selesai.
+     */
+
+    const slideProgress =
+      start /
+      totalSlides;
+
+
+    const overallBase =
+      (
+        fileIndex /
+        totalFiles
+      ) * 100;
+
+
+    const overallFileWidth =
+      100 /
+      totalFiles;
+
+
+    const localProgress =
+      slideProgress *
+      90;
+
+
     const percent =
-      Math.round(
-        (
-          chunkIndex /
-          totalChunks
-        ) *
-        100
-      );
-
-
-    updateProgress(
-      fileIndex +
+      overallBase +
       (
-        percent /
+        localProgress /
         100
-      ),
-      totalFiles,
-      'File besar ' +
+      ) *
+      overallFileWidth;
+
+
+    setProgress(
+
+      percent,
+
+      'Memproses slide ' +
+      (start + 1) +
+      '–' +
+      end,
+
       file.name +
-      ' → slide ' +
-      startSlide +
-      '-' +
-      endSlide
-    );
-
-
-    addLog(
-      'Chunk ' +
-      (
-        chunkIndex + 1
-      ) +
+      ' | ' +
+      end +
       '/' +
-      totalChunks +
-      ': slide ' +
-      startSlide +
-      '-' +
-      endSlide,
-      'info'
+      totalSlides +
+      ' slide'
     );
 
+
+    log(
+      'Memproses slide ' +
+      (start + 1) +
+      '–' +
+      end +
+      '...'
+    );
+
+
+    /*
+     * Request pendek.
+     */
 
     const result =
-      await apiRequest({
+      await apiPost({
 
         action:
           'convertChunk',
 
-        presentationId:
+        fileId:
           fileId,
 
-        startSlide:
-          startSlide,
+        startIndex:
+          start,
 
-        endSlide:
-          endSlide
-
+        endIndex:
+          end
       });
 
 
-    if (!result.success) {
+    if (
+      !result.success
+    ) {
 
       throw new Error(
         result.message ||
-        result.error ||
-        'Chunk gagal diproses.'
+        'Gagal memproses slide.'
       );
-
     }
 
 
-    if (!result.base64) {
-
-      throw new Error(
-        'Data PDF chunk tidak diterima.'
-      );
-
-    }
-
-
-    const chunkBytes =
-      base64ToBytes(
+    const bytes =
+      base64ToUint8Array(
         result.base64
       );
 
 
-    if (
-      !chunkBytes.length
-    ) {
-
-      throw new Error(
-        'PDF chunk kosong.'
-      );
-
-    }
+    chunkPDFs.push(
+      bytes
+    );
 
 
-    /*
-     * Masukkan halaman chunk ke PDF FINAL.
-     */
+    log(
+      'Slide ' +
+      (start + 1) +
+      '–' +
+      end +
+      ' selesai.'
+    );
+  }
+
+
+  /*
+   * SEKARANG GABUNGKAN
+   * SEMUA INTERNAL PDF
+   * MENJADI SATU PDF FINAL.
+   */
+
+  setProgress(
+
+    (
+      fileIndex /
+      totalFiles
+    ) *
+    100 +
+    (
+      95 /
+      totalFiles
+    ),
+
+    'Menyusun PDF final',
+
+    'Menggabungkan seluruh slide menjadi satu PDF.'
+  );
+
+
+  log(
+    'Menyusun PDF final dari ' +
+    chunkPDFs.length +
+    ' proses internal...'
+  );
+
+
+  const finalBytes =
+    await mergePDFs(
+      chunkPDFs
+    );
+
+
+  const pdfName =
+    removeExtension(
+      file.name
+    ) +
+    '.pdf';
+
+
+  /*
+   * HISTORY DICATAT
+   * HANYA SETELAH FINAL PDF BERHASIL.
+   */
+
+  await apiPost({
+
+    action:
+      'markConverted',
+
+    fileId:
+      fileId,
+
+    fileName:
+      file.name,
+
+    pdfName:
+      pdfName,
+
+    method:
+      'DIRECT_PNG_TO_PDF'
+  });
+
+
+  /*
+   * Update status lokal.
+   */
+
+  file.alreadyConverted =
+    true;
+
+
+  log(
+    'PDF FINAL selesai: ' +
+    pdfName
+  );
+
+
+  return {
+
+    success: true,
+
+    skipped: false,
+
+    bytes:
+      finalBytes,
+
+    pdfName:
+      pdfName
+  };
+}
+
+
+/* ============================================================
+   MERGE PDF
+   ============================================================ */
+
+async function mergePDFs(
+  pdfBytesList
+) {
+
+  if (
+    !pdfBytesList ||
+    pdfBytesList.length === 0
+  ) {
+
+    throw new Error(
+      'Tidak ada PDF untuk digabungkan.'
+    );
+  }
+
+
+  const mergedPdf =
+    await PDFLib.PDFDocument.create();
+
+
+  for (
+    let i = 0;
+    i < pdfBytesList.length;
+    i++
+  ) {
+
+    const chunkBytes =
+      pdfBytesList[i];
+
+
     const chunkPdf =
       await PDFLib.PDFDocument.load(
         chunkBytes
       );
 
 
-    const copiedPages =
+    const pages =
       await mergedPdf.copyPages(
         chunkPdf,
         chunkPdf.getPageIndices()
       );
 
 
-    copiedPages.forEach(
+    pages.forEach(
       function(page) {
 
         mergedPdf.addPage(
           page
         );
-
       }
     );
-
-
-    addLog(
-      'Chunk ' +
-      (
-        chunkIndex + 1
-      ) +
-      '/' +
-      totalChunks +
-      ' selesai.',
-      'success'
-    );
-
-
-    /*
-     * Progress internal.
-     */
-    updateProgress(
-      fileIndex +
-      (
-        (
-          chunkIndex + 1
-        ) /
-        totalChunks
-      ),
-      totalFiles,
-      'Menggabungkan PDF: ' +
-      file.name +
-      ' (' +
-      (
-        chunkIndex + 1
-      ) +
-      '/' +
-      totalChunks +
-      ')'
-    );
-
   }
-
-
-  /*
-   * SEMUA CHUNK SUDAH DIGABUNG.
-   */
-  addLog(
-    'Semua chunk selesai. Membuat 1 PDF final: ' +
-    file.name,
-    'info'
-  );
 
 
   const finalBytes =
-    await mergedPdf.save();
+    await mergedPdf.save({
+
+      useObjectStreams:
+        true,
+
+      addDefaultPage:
+        false
+    });
 
 
-  if (
-    !finalBytes ||
-    !finalBytes.length
-  ) {
-
-    throw new Error(
-      'PDF final kosong.'
-    );
-
-  }
-
-
-  const pdfName =
-    makePdfNameClient(
-      file.name
-    );
-
-
-  /*
-   * Simpan history SETELAH
-   * PDF final berhasil dibuat.
-   */
-  try {
-
-    const historyResult =
-      await apiRequest({
-
-        action:
-          'markConverted',
-
-        fileId:
-          fileId
-
-      });
-
-
-    if (
-      historyResult.success
-    ) {
-
-      addLog(
-        'Riwayat tersimpan: ' +
-        file.name,
-        'success'
-      );
-
-    } else {
-
-      addLog(
-        'PDF berhasil, tetapi riwayat tidak tersimpan: ' +
-        (
-          historyResult.message ||
-          'unknown'
-        ),
-        'error'
-      );
-
-    }
-
-  } catch (historyError) {
-
-    /*
-     * PDF tetap dianggap berhasil.
-     */
-    addLog(
-      'PDF berhasil, tetapi penyimpanan riwayat gagal: ' +
-      (
-        historyError.message ||
-        historyError
-      ),
-      'error'
-    );
-
-  }
-
-
-  updateProgress(
-    fileIndex + 1,
-    totalFiles,
-    '1 PDF UTUH selesai: ' +
-    file.name
+  return new Uint8Array(
+    finalBytes
   );
-
-
-  return {
-
-    name:
-      pdfName,
-
-    bytes:
-      finalBytes
-
-  };
-
 }
 
 
-/* =========================================================
-   MAKE PDF NAME CLIENT
-========================================================= */
+/* ============================================================
+   BASE64 → UINT8ARRAY
+   ============================================================ */
 
-function makePdfNameClient(
-  fileName
-) {
-
-  let name =
-    String(
-      fileName ||
-      'slide'
-    );
-
-
-  name =
-    name.replace(
-      /\.gslides$/i,
-      ''
-    );
-
-
-  return name +
-    '.pdf';
-
-}
-
-
-/* =========================================================
-   BASE64 → BYTE
-========================================================= */
-
-function base64ToBytes(
+function base64ToUint8Array(
   base64
 ) {
 
@@ -2490,29 +2667,29 @@ function base64ToBytes(
 
     bytes[i] =
       binary.charCodeAt(i);
-
   }
 
 
   return bytes;
-
 }
 
 
-/* =========================================================
-   DOWNLOAD PDF BYTE
-========================================================= */
+/* ============================================================
+   DOWNLOAD BYTES
+   ============================================================ */
 
-function downloadPdfBytes(
-  pdf
+function downloadBytes(
+  bytes,
+  fileName,
+  mimeType
 ) {
 
   const blob =
     new Blob(
-      [pdf.bytes],
+      [bytes],
       {
         type:
-          'application/pdf'
+          mimeType
       }
     );
 
@@ -2534,8 +2711,7 @@ function downloadPdfBytes(
 
 
   a.download =
-    pdf.name ||
-    'hasil.pdf';
+    fileName;
 
 
   document.body.appendChild(
@@ -2557,58 +2733,31 @@ function downloadPdfBytes(
       );
 
     },
-    2000
+    5000
   );
-
-
-  addLog(
-    'PDF UTUH dikirim ke browser: ' +
-    pdf.name,
-    'success'
-  );
-
 }
 
 
-/* =========================================================
+/* ============================================================
    ZIP
-========================================================= */
+   ============================================================ */
 
-async function createZipAndDownload(
-  pdfResults
+async function downloadZip(
+  pdfs
 ) {
-
-  if (
-    typeof JSZip ===
-    'undefined'
-  ) {
-
-    throw new Error(
-      'Library ZIP belum tersedia.'
-    );
-
-  }
-
 
   const zip =
     new JSZip();
 
 
-  pdfResults.forEach(
-    function(pdf) {
+  pdfs.forEach(
+    function(item) {
 
       zip.file(
-        pdf.name,
-        pdf.bytes
+        item.name,
+        item.bytes
       );
-
     }
-  );
-
-
-  addLog(
-    'Membuat file ZIP...',
-    'info'
   );
 
 
@@ -2619,17 +2768,10 @@ async function createZipAndDownload(
         'blob',
 
       compression:
-        'DEFLATE',
-
-      compressionOptions:
-        {
-          level:
-            6
-        }
-
+        'STORE'
     });
-
-
+  
+  
   const url =
     URL.createObjectURL(
       blob
@@ -2647,7 +2789,9 @@ async function createZipAndDownload(
 
 
   a.download =
-    'hasil-konversi-slides.zip';
+    'Google_Slides_PDF_' +
+    formatDateFile() +
+    '.zip';
 
 
   document.body.appendChild(
@@ -2669,36 +2813,202 @@ async function createZipAndDownload(
       );
 
     },
-    3000
+    5000
   );
-
-
-  addLog(
-    'ZIP berhasil dibuat dan dikirim ke browser.',
-    'success'
-  );
-
 }
 
 
-/* =========================================================
-   CLEAR HISTORY
-========================================================= */
+/* ============================================================
+   REMOVE EXTENSION
+   ============================================================ */
 
-async function clearHistory() {
+function removeExtension(
+  name
+) {
 
-  if (converting) {
-    return;
-  }
+  return String(name)
+    .replace(
+      /\.[^.]+$/,
+      ''
+    );
+}
 
 
-  const confirmClear =
-    confirm(
-      'Hapus seluruh riwayat conversion?'
+/* ============================================================
+   DATE FILE
+   ============================================================ */
+
+function formatDateFile() {
+
+  const d =
+    new Date();
+
+
+  const yyyy =
+    d.getFullYear();
+
+
+  const mm =
+    String(
+      d.getMonth() + 1
+    ).padStart(
+      2,
+      '0'
     );
 
 
-  if (!confirmClear) {
+  const dd =
+    String(
+      d.getDate()
+    ).padStart(
+      2,
+      '0'
+    );
+
+
+  const hh =
+    String(
+      d.getHours()
+    ).padStart(
+      2,
+      '0'
+    );
+
+
+  const mi =
+    String(
+      d.getMinutes()
+    ).padStart(
+      2,
+      '0'
+    );
+
+
+  const ss =
+    String(
+      d.getSeconds()
+    ).padStart(
+      2,
+      '0'
+    );
+
+
+  return (
+    yyyy +
+    mm +
+    dd +
+    '_' +
+    hh +
+    mi +
+    ss
+  );
+}
+
+
+/* ============================================================
+   HISTORY
+   ============================================================ */
+
+async function loadHistory() {
+
+  try {
+
+    const result =
+      await apiPost({
+
+        action:
+          'history'
+      });
+
+
+    if (
+      !result.success
+    ) {
+
+      throw new Error(
+        result.message ||
+        'Gagal membaca history.'
+      );
+    }
+
+
+    const history =
+      result.history || [];
+
+
+    if (
+      history.length === 0
+    ) {
+
+      alert(
+        'History masih kosong.'
+      );
+
+      return;
+    }
+
+
+    let text =
+      'HISTORY CONVERSION\n\n';
+
+
+    history
+      .slice(
+        0,
+        30
+      )
+      .forEach(
+        function(item, index) {
+
+          text +=
+
+            (index + 1) +
+            '. ' +
+
+            (item.fileName || '') +
+
+            '\n' +
+
+            '   PDF: ' +
+            (item.pdfName || '') +
+
+            '\n' +
+
+            '   Waktu: ' +
+            (item.convertedAt || '') +
+
+            '\n\n';
+        }
+      );
+
+
+    alert(
+      text
+    );
+
+
+  } catch (err) {
+
+    alert(
+      'History gagal:\n\n' +
+      err.message
+    );
+  }
+}
+
+
+/* ============================================================
+   CLEAR HISTORY
+   ============================================================ */
+
+async function clearHistory() {
+
+  if (
+    !confirm(
+      'Hapus seluruh history conversion?'
+    )
+  ) {
+
     return;
   }
 
@@ -2706,144 +3016,84 @@ async function clearHistory() {
   try {
 
     const result =
-      await apiRequest({
+      await apiPost({
 
         action:
           'clearHistory'
-
       });
 
 
-    if (!result.success) {
+    if (
+      !result.success
+    ) {
 
       throw new Error(
         result.message ||
-        result.error ||
-        'Gagal menghapus riwayat.'
+        'Gagal menghapus history.'
       );
-
     }
 
 
-    files =
-      files.map(
-        function(file) {
+    scannedFiles.forEach(
+      function(file) {
 
-          file.alreadyConverted =
-            false;
-
-
-          file.status = {
-
-            converted:
-              false,
-
-            text:
-              'BELUM CONVERT'
-
-          };
-
-
-          return file;
-
-        }
-      );
-
-
-    renderFiles(
-      files
+        file.alreadyConverted =
+          false;
+      }
     );
 
 
-    updateSummary();
+    renderFiles();
 
 
-    setStatus(
-      'Riwayat conversion berhasil dihapus.',
-      'success'
+    log(
+      'History conversion berhasil dihapus.'
     );
 
 
-    addLog(
-      'Riwayat conversion berhasil dihapus.',
-      'success'
+  } catch (err) {
+
+    alert(
+      'Gagal menghapus history:\n\n' +
+      err.message
     );
-
-
-  } catch (error) {
-
-    setStatus(
-      error.message ||
-      'Gagal menghapus riwayat.',
-      'error'
-    );
-
-
-    addLog(
-      'GAGAL HAPUS RIWAYAT: ' +
-      (
-        error.message ||
-        error
-      ),
-      'error'
-    );
-
   }
-
 }
 
 
-/* =========================================================
-   INIT
-========================================================= */
+/* ============================================================
+   PAGE LOAD
+   ============================================================ */
 
-document.addEventListener(
-  'DOMContentLoaded',
+window.addEventListener(
+  'load',
   function() {
 
-    if (
-      typeof JSZip !==
-      'undefined'
-    ) {
-
-      addLog(
-        'Library ZIP siap.',
-        'success'
-      );
-
-    } else {
-
-      addLog(
-        'Library ZIP belum tersedia.',
-        'error'
-      );
-
-    }
+    log(
+      'SLIDE TO PDF CONVERTER siap.'
+    );
 
 
-    if (
-      typeof PDFLib !==
-      'undefined'
-    ) {
+    log(
+      'Engine: Direct PNG → PDF.'
+    );
 
-      addLog(
-        'Library PDF merger siap.',
-        'success'
-      );
 
-    } else {
+    log(
+      '1 Google Slides = 1 PDF final.'
+    );
 
-      addLog(
-        'Library PDF merger belum tersedia.',
-        'error'
-      );
 
-    }
-
+    setProgress(
+      0,
+      'Siap',
+      'Masukkan URL folder Google Drive lalu klik SCAN FOLDER.'
+    );
   }
 );
 
 </script>
+
 
 </body>
 </html>
