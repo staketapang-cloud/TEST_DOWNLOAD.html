@@ -1094,21 +1094,21 @@ async function scanFolder() {
 
   try {
 
-    const result =
-      await apiGet({
+const result =
+  await apiGet({
 
-        action:
-          'scan_folder',
+    action:
+      'scan_folder',
 
-        folder_url:
-          folderUrl,
+    folderId:
+      folderUrl,
 
-        recursive:
-          recursive
-            ? 'true'
-            : 'false'
+    recursive:
+      recursive
+        ? 'true'
+        : 'false'
 
-      });
+  });
 
     console.log(
       'SCAN RESULT:',
